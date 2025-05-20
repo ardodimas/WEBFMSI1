@@ -1,0 +1,116 @@
+.sidebar {
+  background: #a7374a;
+  color: #fff;
+  width: 220px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding: 36px 0 18px 0;
+  box-sizing: border-box;
+}
+.sidebar-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 38px;
+  padding-left: 28px;
+  letter-spacing: 1px;
+}
+.sidebar-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-left: 28px;
+}
+.sidebar-menu button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #fff;
+  color: #a7374a;
+  border: none;
+  border-radius: 8px;
+  padding: 7px 18px 7px 10px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, border 0.2s;
+  width: 160px;
+  text-align: left;
+  font-family: inherit;
+  box-shadow: none;
+}
+.sidebar-menu button.active, .sidebar-menu button:hover {
+  background: #a7374a;
+  color: #fff;
+  border: 1.5px solid #fff;
+}
+.icon-box {
+  width: 18px;
+  height: 18px;
+  background: #a7374a;
+  border-radius: 4px;
+  display: inline-block;
+  margin-right: 6px;
+  border: 2px solid #fff;
+}
+.sidebar-settings {
+  margin: 32px 0 10px 28px;
+  font-size: 1rem;
+  color: #fff;
+}
+.sidebar-admin {
+  margin-top: auto;
+  padding-left: 28px;
+  font-size: 0.98rem;
+  padding-bottom: 10px;
+}
+.sidebar-admin-contact {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #fff;
+  margin-top: 4px;
+}
+.icon-phone {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  background: #fff;
+  border-radius: 50%;
+  margin-right: 4px;
+  position: relative;
+}
+.icon-phone:after {
+  content: '';
+  display: block;
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  background: #a7374a;
+  position: absolute;
+  left: 4px;
+  top: 4px;
+}
+.sidebar-menu a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #fff;
+  color: #a7374a;
+  border: none;
+  border-radius: 8px;
+  padding: 7px 18px 7px 10px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, border 0.2s;
+  width: 160px;
+  text-align: left;
+  font-family: inherit;
+  box-shadow: none;
+  text-decoration: none;
+}
+.sidebar-menu a.active, .sidebar-menu a:hover {
+  background: #a7374a;
+  color: #fff;
+  border: 1.5px solid #fff;
+} 
