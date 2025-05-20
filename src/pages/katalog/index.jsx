@@ -1,6 +1,7 @@
 import { Col, Row, Typography, Card, List, FloatButton, Drawer, Form, Input, Button, notification, message, Space, ConfigProvider} from "antd";
 import { DeleteOutlined, EditOutlined, PlusCircleOutlined, SearchOutlined, FilterOutlined, InfoCircleOutlined, ShoppingCartOutlined } from '@ant-design/icons';
 import { useEffect, useState } from "react";
+import axios from "axios";
 
 const { Title, Text } = Typography;
 const { Search } = Input;
@@ -11,44 +12,71 @@ const Katalog = () => {
   const [api, contextHolder] = notification.useNotification();
   const [searchText, setSearchText] = useState('');
 
-  useEffect(() => {
-    // Data dummy untuk testing
-    const dummyData = [
-      {
-        id: 1,
-        name_natures: "Gunung Bromo",
-        description: "Gunung berapi aktif di Jawa Timur",
-        url_photo: "https://i.pinimg.com/736x/d5/35/7d/d5357dd76c4ed89933038b75f5115194.jpg"
-      },
-      {
-        id: 2,
-        name_natures: "Gunung Bromo",
-        description: "Gunung berapi aktif di Jawa Timur",
-        url_photo: "https://i.pinimg.com/736x/d5/35/7d/d5357dd76c4ed89933038b75f5115194.jpg"
-      },
-      {
-        id: 3,
-        name_natures: "Gunung Bromo",
-        description: "Gunung berapi aktif di Jawa Timur",
-        url_photo: "https://i.pinimg.com/736x/d5/35/7d/d5357dd76c4ed89933038b75f5115194.jpg"
-      },
-      {
-        id: 4,
-        name_natures: "Gunung Bromo",
-        description: "Gunung berapi aktif di Jawa Timur",
-        url_photo: "https://i.pinimg.com/736x/d5/35/7d/d5357dd76c4ed89933038b75f5115194.jpg"
-      },
-      {
-        id: 5,
-        name_natures: "Gunung Bromo",
-        description: "Gunung berapi aktif di Jawa Timur",
-        url_photo: "https://i.pinimg.com/736x/d5/35/7d/d5357dd76c4ed89933038b75f5115194.jpg"
-      },
+  // useEffect(() => {
+  //   // Data dummy untuk testing
+  //   const dummyData = [
+  //     {
+  //       id: 1,
+  //       name_natures: "Gunung Bromo",
+  //       description: "Gunung berapi aktif di Jawa Timur",
+  //       url_photo: "https://i.pinimg.com/736x/d5/35/7d/d5357dd76c4ed89933038b75f5115194.jpg"
+  //     },
+  //     {
+  //       id: 2,
+  //       name_natures: "Gunung Bromo",
+  //       description: "Gunung berapi aktif di Jawa Timur",
+  //       url_photo: "https://i.pinimg.com/736x/d5/35/7d/d5357dd76c4ed89933038b75f5115194.jpg"
+  //     },
+  //     {
+  //       id: 3,
+  //       name_natures: "Gunung Bromo",
+  //       description: "Gunung berapi aktif di Jawa Timur",
+  //       url_photo: "https://i.pinimg.com/736x/d5/35/7d/d5357dd76c4ed89933038b75f5115194.jpg"
+  //     },
+  //     {
+  //       id: 4,
+  //       name_natures: "Gunung Bromo",
+  //       description: "Gunung berapi aktif di Jawa Timur",
+  //       url_photo: "https://i.pinimg.com/736x/d5/35/7d/d5357dd76c4ed89933038b75f5115194.jpg"
+  //     },
+  //     {
+  //       id: 5,
+  //       name_natures: "Gunung Bromo",
+  //       description: "Gunung berapi aktif di Jawa Timur",
+  //       url_photo: "https://i.pinimg.com/736x/d5/35/7d/d5357dd76c4ed89933038b75f5115194.jpg"
+  //     },
 
-    ];
+  //   ];
     
-    setDataSources(dummyData);
+  //   setDataSources(dummyData);
+  // }, []);
+
+  useEffect(() => {
+    setIsLoading(true);
+    axios.get("http://localhost:8052/api/costumes")
+      .then((res) => {
+        setDataSources(res.data);
+      })
+      .catch((err) => {
+        console.error("Gagal mengambil data:", err);
+        message.error("Gagal mengambil data dari server");
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
   }, []);
+
+  const [open, setOpen] = useState(false);
+  const [placement, setPlacement] = useState('right');
+  const showDrawer = () => {
+    setOpen(true);
+  };
+  const onChange = e => {
+    setPlacement(e.target.value);
+  };
+  const onClose = () => {
+    setOpen(false);
+  };
 
   const handleSearch = (value) => {
     setSearchText(value);
@@ -94,6 +122,23 @@ const Katalog = () => {
                 </Space.Compact>
               </div>
 
+              <Drawer
+                title="Form Pembelian"
+                placement={placement}
+                width={500}
+                onClose={onClose}
+                open={open}
+                extra={
+                  <Space>
+                    <Button onClick={onClose}>Cancel</Button>
+                    <Button type="primary" onClick={onClose}>
+                      OK
+                    </Button>
+                  </Space>
+                }
+              >
+                <p>Form Pembelian</p>
+              </Drawer>
               {isLoading ? (
                 <div>Sedang menunggu data</div>
               ) : (
@@ -145,7 +190,7 @@ const Katalog = () => {
                           <Button 
                             type="primary" 
                             icon={<ShoppingCartOutlined />}
-                            onClick={() => message.success('Berhasil ditambahkan ke keranjang')}
+                            onClick={() => {showDrawer()}}
                           >
                             Checkout
                           </Button>

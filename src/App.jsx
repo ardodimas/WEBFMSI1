@@ -3,9 +3,14 @@ import Sidebar from './Sidebar'
 import './App.css'
 import Profile from './pages/Profile'
 import Katalog from './pages/katalog'
+import LoginPage from './pages/login/LoginPage'
+import Dashboard from './pages/Dashboard/Dashboard'
+
 
 const pageTitles = {
-  '/': 'Home',
+  '/': 'Login',
+  '/login': 'Login',
+  '/dashboard': 'Dashboard',
   '/katalog': 'Katalog',
   '/pesanan': 'Pesanan',
   '/kontak': 'Kontak',
@@ -22,7 +27,9 @@ function MainContent() {
         <div className="main-header-divider" />
       </div>
       <Routes>
-        <Route path="/" element={<div>Ini halaman Home</div>} />
+        <Route path="/" element={<LoginPage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/katalog" element={<Katalog />} />
         <Route path="/pesanan" element={<div>Ini halaman Pesanan</div>} />
         <Route path="/kontak" element={<div>Ini halaman Kontak</div>} />
