@@ -2,9 +2,11 @@ import { Routes, Route, useLocation } from 'react-router-dom'
 import Sidebar from './Sidebar'
 import './App.css'
 import Profile from './pages/Profile'
+import Katalog from './pages/katalog'
 
 const pageTitles = {
-  '/': 'Katalog',
+  '/': 'Home',
+  '/katalog': 'Katalog',
   '/pesanan': 'Pesanan',
   '/kontak': 'Kontak',
   '/profile': 'Profile',
@@ -20,7 +22,8 @@ function MainContent() {
         <div className="main-header-divider" />
       </div>
       <Routes>
-        <Route path="/" element={<div>Ini halaman Katalog</div>} />
+        <Route path="/" element={<div>Ini halaman Home</div>} />
+        <Route path="/katalog" element={<Katalog />} />
         <Route path="/pesanan" element={<div>Ini halaman Pesanan</div>} />
         <Route path="/kontak" element={<div>Ini halaman Kontak</div>} />
         <Route path="/profile" element={<Profile />} />

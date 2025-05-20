@@ -1,27 +1,48 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  overflow-x: hidden;
+  width: 100%;
+  position: relative;
+}
+
 body, #root {
   margin: 0;
   padding: 0;
   background: #fff;
   font-family: 'Quicksand', Arial, sans-serif;
-  width: 100vw;
   min-height: 100vh;
-  box-sizing: border-box;
 }
 
 .app-main {
   display: flex;
   min-height: 100vh;
   background: #fff;
-  width: 100vw;
+  position: relative;
+  width: 100%;
 }
 
 .main-content {
   flex: 1;
   background: #fff;
+  position: relative;
+  min-height: 100vh;
+  margin-left: 220px;
+  width: calc(100% - 220px);
+  overflow-x: hidden;
 }
 
 .main-header {
   padding: 24px 32px 0 32px;
+  position: sticky;
+  top: 0;
+  background: #fff;
+  z-index: 100;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
 .main-header h2 {

@@ -2,12 +2,16 @@
   background: #a7374a;
   color: #fff;
   width: 220px;
-  min-height: 100vh;
+  height: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   padding: 36px 0 18px 0;
-  box-sizing: border-box;
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 1000;
+  overflow-y: auto;
 }
 .sidebar-title {
   font-size: 1.5rem;
