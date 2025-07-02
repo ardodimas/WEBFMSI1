@@ -1,0 +1,143 @@
+.navbar {
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+}
+
+.navbar-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+  height: 64px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.navbar-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.navbar-brand {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #a7374a;
+  text-decoration: none;
+  letter-spacing: 1px;
+}
+
+.navbar-right {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.menu-button {
+  display: none;
+}
+
+.avatar {
+  background: #a7374a;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.avatar:hover {
+  opacity: 0.8;
+}
+
+/* Mobile Drawer */
+.mobile-drawer .ant-drawer-content-wrapper {
+  width: 250px !important;
+}
+
+.mobile-drawer .ant-drawer-header {
+  background: #a7374a;
+  color: #fff;
+}
+
+.mobile-drawer .ant-drawer-title {
+  color: #fff;
+}
+
+.drawer-footer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 16px;
+  background: #fff;
+  border-top: 1px solid #f0f0f0;
+}
+
+.admin-contact {
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.admin-phone {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+  color: #a7374a;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .menu-button {
+    display: block;
+  }
+
+  .navbar-right .ant-menu {
+    display: none;
+  }
+}
+
+/* Menu Styles */
+.ant-menu {
+  border: none !important;
+  background: transparent !important;
+}
+
+.ant-menu-item {
+  color: #666 !important;
+}
+
+.ant-menu-item-selected {
+  color: #a7374a !important;
+  font-weight: 500;
+}
+
+.ant-menu-item:hover {
+  color: #a7374a !important;
+}
+
+/* Dropdown Menu */
+.ant-dropdown-menu {
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+.ant-dropdown-menu-item {
+  padding: 8px 16px;
+}
+
+.ant-dropdown-menu-item:hover {
+  background: #fff1f0;
+}
+
+.ant-dropdown-menu-item-danger {
+  color: #ff4d4f;
+}
+
+.ant-dropdown-menu-item-danger:hover {
+  background: #fff1f0;
+  color: #ff4d4f;
+} 

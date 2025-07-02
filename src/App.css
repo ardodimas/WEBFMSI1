@@ -20,6 +20,7 @@ body, #root {
 
 .app-main {
   display: flex;
+  flex-direction: column;
   min-height: 100vh;
   background: #fff;
   position: relative;
@@ -30,16 +31,19 @@ body, #root {
   flex: 1;
   background: #fff;
   position: relative;
-  min-height: 100vh;
-  margin-left: 220px;
-  width: calc(100% - 220px);
-  overflow-x: hidden;
+  min-height: calc(100vh - 64px);
+  margin-top: 64px;
+  padding: 0 24px;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
 }
 
 .main-header {
-  padding: 24px 32px 0 32px;
+  padding: 24px 0;
   position: sticky;
-  top: 0;
+  top: 64px;
   background: #fff;
   z-index: 100;
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
@@ -112,5 +116,15 @@ body, #root {
   margin: 0 0 6px 0;
   color: #222;
   font-family: 'Quicksand', Arial, sans-serif;
+}
+
+@media (max-width: 768px) {
+  .main-content {
+    padding: 0 16px;
+  }
+  
+  .main-header {
+    padding: 16px 0;
+  }
 }
 
