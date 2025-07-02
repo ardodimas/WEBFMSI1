@@ -3,13 +3,10 @@ import Sidebar from './Sidebar'
 import './App.css'
 import Profile from './pages/Profile'
 import Katalog from './pages/katalog'
-import LoginPage from './pages/login/LoginPage'
+import LoginPage from './pages/login'
 import Dashboard from './pages/Dashboard/Dashboard'
 
-
 const pageTitles = {
-  '/': 'Login',
-  '/login': 'Login',
   '/dashboard': 'Dashboard',
   '/katalog': 'Katalog',
   '/pesanan': 'Pesanan',
@@ -27,10 +24,8 @@ function MainContent() {
         <div className="main-header-divider" />
       </div>
       <Routes>
-        <Route path="/" element={<LoginPage />} />
-        <Route path="/login" element={<LoginPage />} />
         <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/katalog" element={<Katalog />} />
+        <Route path="/costumes" element={<Katalog />} />
         <Route path="/pesanan" element={<div>Ini halaman Pesanan</div>} />
         <Route path="/kontak" element={<div>Ini halaman Kontak</div>} />
         <Route path="/profile" element={<Profile />} />
@@ -40,12 +35,23 @@ function MainContent() {
 }
 
 function App() {
-  return (
+  const location = useLocation();
+
+  const isAuthPage = ["/", "/login"].includes(location.pathname);
+
+  return isAuthPage ? (
+    // jika di halaman login/register, tampilkan hanya LoginPage fullscreen
+    <Routes>
+      <Route path="/" element={<LoginPage />} />
+      <Route path="/login" element={<LoginPage />} />
+    </Routes>
+  ) : (
+    // selain itu, tampilkan Sidebar + MainContent
     <div className="app-main">
       <Sidebar />
       <MainContent />
     </div>
-  )
+  );
 }
 
-export default App
+export default App;

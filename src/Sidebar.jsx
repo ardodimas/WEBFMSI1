@@ -4,7 +4,7 @@ import './Sidebar.css';
 
 const menu = [
   { label: 'Home', path: '/dashboard' },
-  { label: 'Katalog', path: '/katalog' },
+  { label: 'Katalog', path: '/costumes' },
   { label: 'Pesanan', path: '/pesanan' },
   { label: 'Kontak', path: '/kontak' },
 ];

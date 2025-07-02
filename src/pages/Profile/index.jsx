@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { Modal, Button } from "antd";
-import { logoutUser } from "../services/authService";
+
 import './Profile.css';
 import React, { useState } from 'react';
 
