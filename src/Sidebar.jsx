@@ -3,7 +3,6 @@ import { Link, useLocation } from 'react-router-dom';
 import './Sidebar.css';
 
 const menu = [
-  { label: 'Home', path: '/dashboard' },
   { label: 'Katalog', path: '/costumes' },
   { label: 'Pesanan', path: '/pesanan' },
   { label: 'Kontak', path: '/kontak' },

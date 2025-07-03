@@ -5,6 +5,9 @@ import Profile from './pages/Profile'
 import Katalog from './pages/katalog'
 import LoginPage from './pages/login'
 import Dashboard from './pages/Dashboard/Dashboard'
+import Pesanan from './pages/user/Pesanan'
+import { useContext } from "react";
+import { AuthContext } from "./providers/AuthProvider";
 
 const pageTitles = {
   '/dashboard': 'Dashboard',
@@ -26,7 +29,7 @@ function MainContent() {
       <Routes>
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/costumes" element={<Katalog />} />
-        <Route path="/pesanan" element={<div>Ini halaman Pesanan</div>} />
+        <Route path="/pesanan" element={<Pesanan />} />
         <Route path="/kontak" element={<div>Ini halaman Kontak</div>} />
         <Route path="/profile" element={<Profile />} />
       </Routes>
@@ -36,6 +39,12 @@ function MainContent() {
 
 function App() {
   const location = useLocation();
+  const { isLoadingScreen } = useContext(AuthContext);
+
+  if (isLoadingScreen) {
+    // Tampilkan loading spinner
+    return <div>Loading...</div>;
+  }
 
   const isAuthPage = ["/", "/login"].includes(location.pathname);
 
