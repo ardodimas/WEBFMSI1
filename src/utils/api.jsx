@@ -33,6 +33,7 @@ export const getData = async (url) => {
 
 export const getDataPrivate = async (url) => {
   let token = await jwtStorage.retrieveToken();
+  console.log("Token dipakai:", token);
   return fetch(REACT_APP_API_URL + url, {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -259,4 +260,28 @@ export const getImage = (url_image) => {
   const imgDefault = "/storage/images/userpng_1717846018.png";
   let imgResult = url_image ? url_image : imgDefault;
   return REACT_APP_API_URL + imgResult;
+};
+
+// Fungsi untuk mengirim data FormData (biasanya untuk upload file)
+export const sendDataWithFile = async (endpoint, formData, token = null) => {
+  try {
+    const response = await fetch(`http://127.0.0.1:5000${endpoint}`, {
+      method: "POST",
+      headers: token
+        ? {
+            Authorization: `Bearer ${token}`,
+          }
+        : {},
+      body: formData,
+    });
+
+    if (!response.ok) {
+      throw new Error("Gagal mengirim data dengan file");
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("sendDataWithFile error:", error);
+    throw error;
+  }
 };

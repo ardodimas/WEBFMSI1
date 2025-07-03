@@ -1,7 +1,8 @@
 import { useEffect, useState, useContext } from "react";
 import { AuthContext } from "../../../providers/AuthProvider";
 import { getDataPrivate } from "../../../utils/api";
-import { Card, Row, Col, Tag, Typography, Space } from "antd";
+import { Card, Row, Col, Tag, Typography, Space, Button } from "antd";
+import { useNavigate } from "react-router-dom";
 import './Pesanan.css';
 
 const { Text } = Typography;
@@ -17,11 +18,13 @@ const PesananPage = () => {
   const { userProfile } = useContext(AuthContext);
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (userProfile?.id) {
       getDataPrivate(`/api/orders/user/${userProfile.id}`)
         .then((data) => {
+            console.log("API response:", data);
           setOrders(data);
           setLoading(false);
         })
@@ -30,6 +33,16 @@ const PesananPage = () => {
   }, [userProfile]);
 
   if (loading) return <div>Loading pesanan...</div>;
+
+  const handleBayar = (order) => {
+    if (order.payment_method === "transfer") {
+        navigate(`/pembayaran/transfer/${order.id}`);
+    } else if (order.payment_method === "qris") {
+        navigate(`/pembayaran/qris/${order.id}`);
+    } else {
+        alert.error("Metode pembayaran tidak dikenal.");
+    }
+  };
 
   return (
     <div>
@@ -80,6 +93,17 @@ const PesananPage = () => {
                     </div>
                   ))}
                 </div>
+                {order.payment_status === "unpaid" && (
+                <div style={{ marginTop: 16 }}>
+                    <Button
+                    type="primary"
+                    onClick={() => handleBayar(order)}
+                    style={{ backgroundColor: "#a7374a", borderColor: "#a7374a" }}
+                    >
+                    Bayar Sekarang
+                    </Button>
+                </div>
+                )}
               </Card>
             </Col>
           ))}

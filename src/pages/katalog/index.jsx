@@ -14,6 +14,7 @@ import {
   Space,
   ConfigProvider,
   DatePicker,
+  Select, // Tambahkan Select untuk dropdown metode pembayaran
 } from "antd";
 import {
   SearchOutlined,
@@ -35,15 +36,14 @@ const Katalog = () => {
   const [dataSources, setDataSources] = useState([]);
   const [searchText, setSearchText] = useState("");
   const [open, setOpen] = useState(false);
-  const [selectedCostume, setSelectedCostume] = useState(null); // Menyimpan kostum yang dipilih untuk pemesanan
-  const [selectedSize, setSelectedSize] = useState(""); // Menyimpan ukuran yang dipilih
+  const [selectedCostume, setSelectedCostume] = useState(null);
+  const [selectedSize, setSelectedSize] = useState("");
   const [placement] = useState("right");
 
-  const { isLoggedIn } = useContext(AuthContext);
+  const { isLoggedIn, userProfile } = useContext(AuthContext);
   const navigate = useNavigate();
   const [api, contextHolder] = notification.useNotification();
 
-  // Fetch Data
   useEffect(() => {
     if (!isLoggedIn) {
       navigate("/login", { replace: true });
@@ -63,65 +63,83 @@ const Katalog = () => {
       });
   }, [isLoggedIn, navigate]);
 
-  // Handle Drawer
   const showDrawer = (costume) => {
-    setSelectedCostume(costume); // Set kostum yang dipilih
+    setSelectedCostume(costume);
     setOpen(true);
   };
 
   const onClose = () => {
     setOpen(false);
-    setSelectedCostume(null); // Reset kostum yang dipilih saat drawer ditutup
+    setSelectedCostume(null);
     Pemesanan.resetFields();
   };
 
-  // Handle Search
   const handleSearch = (value) => {
     setSearchText(value);
   };
 
-  // Handle Filter
   const handleFilter = () => {
     message.info("Fitur filter akan segera hadir");
   };
 
+  const [totalPrice, setTotalPrice] = useState(0);
   const [Pemesanan] = Form.useForm();
-  
-  // Handle Order Submit
-  const handleOrderSubmit = () => {
+
+  const rental_date = Form.useWatch("rental_date", Pemesanan);
+  const return_date = Form.useWatch("return_date", Pemesanan);
+  const quantity = Form.useWatch("quantity", Pemesanan);
+
+  useEffect(() => {
+    const pricePerDay = selectedCostume?.price_per_day || 0;
+
+    if (rental_date && return_date && quantity && pricePerDay) {
+      const start = dayjs(rental_date);
+      const end = dayjs(return_date);
+      const days = end.diff(start, "day");
+
+      if (days >= 0) {
+        const total = (days) * quantity * pricePerDay;
+        setTotalPrice(total);
+      } else {
+        setTotalPrice(0);
+      }
+    } else {
+      setTotalPrice(0);
+    }
+  }, [rental_date, return_date, quantity, selectedCostume]);
+
+  const handleOrderSubmit = (values) => {
+    const { address, quantity, rental_date, return_date, size, payment_method } = values;
+
+    // Data pemesanan yang akan dikirim ke server
     const orderData = {
-      user_id: 1, // ID user, sebaiknya dinamis sesuai login
+      user_id: userProfile?.id,
       costume_id: selectedCostume.id,
       status: "pending", // Status pesanan
       payment_status: "unpaid", // Status pembayaran
+      payment_method, // Menambahkan metode pembayaran
     };
 
-    // Ambil nilai dari Form
-    const rental_date = dayjs(Pemesanan.getFieldValue("rental_date")).format("YYYY-MM-DD");
-    const return_date = dayjs(Pemesanan.getFieldValue("return_date")).format("YYYY-MM-DD");
-    const address = Pemesanan.getFieldValue("address");
-    const quantity = Pemesanan.getFieldValue("quantity");
-    const size = selectedSize;
-
-    // Persiapkan data yang akan dikirim
     const orderPayload = {
       ...orderData,
-      rental_date,
-      return_date,
+      rental_date: dayjs(rental_date).format("YYYY-MM-DD"),
+      return_date: dayjs(return_date).format("YYYY-MM-DD"),
       address,
       quantity,
       size,
+      price_per_day: selectedCostume.price_per_day,
+      price_snapshot: totalPrice,
     };
 
-    // Mengirimkan data ke backend
+    // Mengirimkan data pesanan ke backend
     sendData("/api/orders", orderPayload)
       .then((resp) => {
         if (resp?.id) {
           openNotificationWithIcon("success", "Pembelian Berhasil!", "Pembelian berhasil dilakukan.");
           setSelectedCostume(null);
           fetch("http://127.0.0.1:5000/api/costumes")
-          .then((res) => res.json())
-          .then((data) => setDataSources(data));
+            .then((res) => res.json())
+            .then((data) => setDataSources(data));
           Pemesanan.resetFields();
           onClose();
         } else {
@@ -134,15 +152,13 @@ const Katalog = () => {
       });
   };
 
-  // Notification helper function
   const openNotificationWithIcon = (type, message, description) => {
-    api[type]( {
+    api[type]({
       message: message,
       description: description,
     });
   };
 
-  // Render Katalog
   return (
     <ConfigProvider theme={{ token: { colorPrimary: "#a7374a" } }}>
       <div className="layout-content">
@@ -185,7 +201,7 @@ const Katalog = () => {
                     xxl: 4,
                   }}
                   dataSource={dataSources.filter((item) =>
-                    item.name.toLowerCase().includes(searchText.toLowerCase()) // Menggunakan 'name' dari model Costume
+                    item.name.toLowerCase().includes(searchText.toLowerCase())
                   )}
                   renderItem={(item) => (
                     <List.Item key={item.id}>
@@ -223,14 +239,14 @@ const Katalog = () => {
                           <Button
                             type="primary"
                             icon={<ShoppingCartOutlined />}
-                            onClick={() => showDrawer(item)} // Menampilkan drawer dengan item yang dipilih
+                            onClick={() => showDrawer(item)} // Menampilkan drawer
                           >
                             Checkout
                           </Button>,
                         ]}
                       >
                         <Card.Meta
-                          title={item.name} // Menggunakan 'name' dari model Costume
+                          title={item.name}
                           description={item.description}
                         />
                       </Card>
@@ -264,29 +280,36 @@ const Katalog = () => {
               layout="vertical"
               onFinish={handleOrderSubmit}
               initialValues={{
-                costume_name: selectedCostume.name, // Memasukkan nama kostum yang dipilih
-                price: selectedCostume.price_per_day, // Memasukkan harga kostum per hari
+                costume_name: selectedCostume.name,
+                price: selectedCostume.price_per_day,
               }}
             >
+              {/* Tanggal Sewa */}
               <Form.Item
                 label="Tanggal Sewa"
                 name="rental_date"
-                rules={[{ required: true, message: "Please select rental date" }]}>
+                rules={[{ required: true, message: "Please select rental date" }]}
+              >
                 <DatePicker format="YYYY-MM-DD" style={{ width: "100%" }} />
               </Form.Item>
+              {/* Tanggal Kembali */}
               <Form.Item
                 label="Tanggal Kembali"
                 name="return_date"
-                rules={[{ required: true, message: "Please select return date" }]}>
+                rules={[{ required: true, message: "Please select return date" }]}
+              >
                 <DatePicker format="YYYY-MM-DD" style={{ width: "100%" }} />
               </Form.Item>
+              {/* Alamat */}
               <Form.Item
                 label="Alamat"
                 name="address"
-                rules={[{ required: true, message: "Please enter your address" }]}>
+                rules={[{ required: true, message: "Please enter your address" }]}
+              >
                 <Input.TextArea rows={3} />
               </Form.Item>
 
+              {/* Ukuran Kostum */}
               <Form.Item
                 label="Ukuran Kostum"
                 name="size"
@@ -310,11 +333,11 @@ const Katalog = () => {
                         }}
                         disabled={sizeItem.stock === 0}
                         onClick={() => {
-                          setSelectedSize(sizeId); // update state
-                          Pemesanan.setFieldsValue({ size: sizeId }); // update value di form
+                          setSelectedSize(sizeId);
+                          Pemesanan.setFieldsValue({ size: sizeId });
                         }}
                       >
-                        {`${sizeName}`}
+                        {sizeName}
                       </Button>
                     );
                   })}
@@ -331,12 +354,32 @@ const Katalog = () => {
                   </div>
                 )}
               </Form.Item>
+
+              {/* Jumlah */}
               <Form.Item
                 label="Jumlah"
                 name="quantity"
-                rules={[{ required: true, message: "Please enter quantity" }]}>
+                rules={[{ required: true, message: "Please enter quantity" }]}
+              >
                 <Input type="number" min={1} />
               </Form.Item>
+
+              {/* Metode Pembayaran */}
+              <Form.Item
+                label="Metode Pembayaran"
+                name="payment_method"
+                rules={[{ required: true, message: "Please select a payment method" }]}
+              >
+                <Select placeholder="Pilih metode pembayaran">
+                  <Select.Option value="transfer">Transfer Bank</Select.Option>
+                  <Select.Option value="qris">QRIS</Select.Option>
+                </Select>
+              </Form.Item>
+              {/* Total Harga */}
+              <div style={{ marginTop: "16px" }}>
+                <Text strong>Total Harga: </Text>
+                <Text>Rp {totalPrice.toLocaleString("id-ID")}</Text>
+              </div>
             </Form>
           )}
         </Drawer>

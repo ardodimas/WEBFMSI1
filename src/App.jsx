@@ -6,6 +6,7 @@ import Katalog from './pages/katalog'
 import LoginPage from './pages/login'
 import Dashboard from './pages/Dashboard/Dashboard'
 import Pesanan from './pages/user/Pesanan'
+import TransferPaymentPage from './pages/Transfer'
 import { useContext } from "react";
 import { AuthContext } from "./providers/AuthProvider";
 
@@ -32,6 +33,9 @@ function MainContent() {
         <Route path="/pesanan" element={<Pesanan />} />
         <Route path="/kontak" element={<div>Ini halaman Kontak</div>} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/pembayaran/transfer/:id" element={<TransferPaymentPage />} />
+        {/* <Route path="/pembayaran/transfer/:orderId" element={<HalamanTransfer />} />
+        <Route path="/pembayaran/qris/:orderId" element={<HalamanQRIS />} />  */}
       </Routes>
     </div>
   )
