@@ -2,6 +2,7 @@ import { useEffect, useState, useContext } from "react";
 import { AuthContext } from "../../../providers/AuthProvider";
 import { getDataPrivate } from "../../../utils/api";
 import { Card, Row, Col, Tag, Typography, Space, Button } from "antd";
+import { ReloadOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import './Pesanan.css';
 
@@ -12,6 +13,7 @@ const statusColor = {
   paid: "green",
   pending: "gold",
   completed: "blue",
+  waiting_verification: "orange",
 };
 
 const PesananPage = () => {
@@ -22,15 +24,32 @@ const PesananPage = () => {
 
   useEffect(() => {
     if (userProfile?.id) {
+      fetchOrders();
+    }
+  }, [userProfile]);
+
+  const fetchOrders = () => {
+    if (userProfile?.id) {
+      setLoading(true);
       getDataPrivate(`/api/orders/user/${userProfile.id}`)
         .then((data) => {
-            console.log("API response:", data);
+          console.log("API response:", data);
           setOrders(data);
           setLoading(false);
         })
         .catch(() => setLoading(false));
     }
-  }, [userProfile]);
+  };
+
+  // Refresh orders when component comes into focus (e.g., when returning from payment page)
+  useEffect(() => {
+    const handleFocus = () => {
+      fetchOrders();
+    };
+
+    window.addEventListener('focus', handleFocus);
+    return () => window.removeEventListener('focus', handleFocus);
+  }, [userProfile?.id]);
 
   if (loading) return <div>Loading pesanan...</div>;
 
@@ -46,7 +65,16 @@ const PesananPage = () => {
 
   return (
     <div>
-      <h2>Daftar Pesanan Saya</h2>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
+        <h2>Daftar Pesanan Saya</h2>
+        <Button 
+          icon={<ReloadOutlined />} 
+          onClick={fetchOrders}
+          loading={loading}
+        >
+          Refresh
+        </Button>
+      </div>
       {orders.length === 0 ? (
         <div>Belum ada pesanan.</div>
       ) : (
@@ -76,7 +104,13 @@ const PesananPage = () => {
                   <Text strong>Metode Pembayaran:</Text> {order.payment_method || "-"}
                 </div>
                 <div style={{ marginBottom: 8 }}>
-                  <Text strong>Status Pembayaran:</Text> <Tag color={statusColor[order.payment_status] || "default"}>{order.payment_status}</Tag>
+                  <Text strong>Status Pembayaran:</Text> 
+                  <Tag color={statusColor[order.payment_status] || "default"}>
+                    {order.payment_status === 'pending' ? 'Menunggu Verifikasi' : 
+                     order.payment_status === 'paid' ? 'Sudah Dibayar' : 
+                     order.payment_status === 'unpaid' ? 'Belum Dibayar' : 
+                     order.payment_status}
+                  </Tag>
                 </div>
                 <div style={{ marginBottom: 8 }}>
                   <Text strong>Status Pesanan:</Text> <Tag color={statusColor[order.status] || "default"}>{order.status}</Tag>

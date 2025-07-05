@@ -35,9 +35,21 @@ const TransferPaymentPage = () => {
     formData.append("proof_image", fileList[0]?.originFileObj);
 
     try {
-      await sendDataWithFile("/api/payments", formData);
-      message.success("Bukti pembayaran berhasil diunggah");
-      navigate("/pesanan"); // kembali ke halaman pesanan
+      const response = await sendDataWithFile("/api/payments", formData);
+      
+      if (response && response.order) {
+        // Update order data dengan data terbaru
+        setOrder(response.order);
+        message.success(response.message || "Bukti pembayaran berhasil diunggah dan status diupdate menjadi pending");
+        
+        // Tunggu sebentar sebelum redirect agar user bisa melihat pesan
+        setTimeout(() => {
+          navigate("/pesanan");
+        }, 2000);
+      } else {
+        message.success("Bukti pembayaran berhasil diunggah");
+        navigate("/pesanan");
+      }
     } catch (error) {
       message.error("Gagal mengunggah bukti pembayaran");
       console.error(error);

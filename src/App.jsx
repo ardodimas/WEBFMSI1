@@ -7,6 +7,8 @@ import LoginPage from './pages/login'
 import Dashboard from './pages/Dashboard/Dashboard'
 import Pesanan from './pages/user/Pesanan'
 import TransferPaymentPage from './pages/Transfer'
+import OrderManagementPage from './pages/admin/OrderManagement'
+import QRISPaymentPage from './pages/Transfer/QRISPayment'
 import { useContext } from "react";
 import { AuthContext } from "./providers/AuthProvider";
 
@@ -16,6 +18,7 @@ const pageTitles = {
   '/pesanan': 'Pesanan',
   '/kontak': 'Kontak',
   '/profile': 'Profile',
+  '/admin/orders': 'Manajemen Pesanan',
 }
 
 function MainContent() {
@@ -33,7 +36,9 @@ function MainContent() {
         <Route path="/pesanan" element={<Pesanan />} />
         <Route path="/kontak" element={<div>Ini halaman Kontak</div>} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/admin/orders" element={<OrderManagementPage />} />
         <Route path="/pembayaran/transfer/:id" element={<TransferPaymentPage />} />
+        <Route path="/pembayaran/qris/:id" element={<QRISPaymentPage />} />
         {/* <Route path="/pembayaran/transfer/:orderId" element={<HalamanTransfer />} />
         <Route path="/pembayaran/qris/:orderId" element={<HalamanQRIS />} />  */}
       </Routes>
@@ -56,7 +61,6 @@ function App() {
     // jika di halaman login/register, tampilkan hanya LoginPage fullscreen
     <Routes>
       <Route path="/" element={<LoginPage />} />
-      <Route path="/login" element={<LoginPage />} />
     </Routes>
   ) : (
     // selain itu, tampilkan Sidebar + MainContent
