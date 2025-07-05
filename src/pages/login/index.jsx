@@ -9,7 +9,7 @@ import {
   notification,
 } from "antd";
 import { useState, useContext } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { AuthContext } from "../../providers/AuthProvider";
 import { GoogleOutlined, TwitterOutlined, FacebookOutlined } from "@ant-design/icons";
 import { sendData } from "../../utils/api";
@@ -23,7 +23,6 @@ const LoginPage = () => {
   const [password, setPassword] = useState("");
   const [api, contextHolder] = notification.useNotification();
   const { login } = useContext(AuthContext);
-  const navigate = useNavigate();
 
   const handleLogin = async () => {
     const payload = { email, password };
@@ -31,11 +30,11 @@ const LoginPage = () => {
       const resp = await sendData("/api/login", payload);
       if (resp?.access_token) {
         login(resp.access_token);
-        navigate("/costumes");
+        // Redirect akan ditangani di AuthProvider berdasarkan role
       } else {
         throw new Error("Invalid credentials");
       }
-    } catch (err) {
+    } catch {
       api.error({
         message: "Login Gagal",
         description: "Email atau password salah.",

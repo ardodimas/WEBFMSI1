@@ -5,26 +5,45 @@ import './Sidebar.css';
 
 const Sidebar = () => {
   const location = useLocation();
-  const { userProfile } = useContext(AuthContext);
-
+  const { userProfile, logout } = useContext(AuthContext);
+  
+  // Menu untuk User biasa
   const userMenu = [
     { label: 'Katalog', path: '/costumes' },
     { label: 'Pesanan', path: '/pesanan' },
-    { label: 'Kontak', path: '/kontak' },
   ];
 
+  // Menu untuk Admin
   const adminMenu = [
-    { label: 'Dashboard', path: '/dashboard' },
-    { label: 'Manajemen Pesanan', path: '/admin/orders' },
-    { label: 'Katalog', path: '/costumes' },
-    { label: 'Kontak', path: '/kontak' },
+    { label: 'Katalog Admin', path: '/katalog-admin' },
   ];
 
-  const settings = [
+  // Menu settings untuk semua user
+  const settingsMenu = [
     { label: 'Profile', path: '/profile' },
   ];
 
-  const currentMenu = userProfile?.role === 'admin' ? adminMenu : userMenu;
+  // Tentukan menu yang akan ditampilkan berdasarkan role
+  const getMenuItems = () => {
+    if (userProfile?.role === 'admin') {
+      return adminMenu;
+    } else {
+      return userMenu;
+    }
+  };
+
+  const menuItems = getMenuItems();
+
+  // Handle logout dengan debugging
+  const handleLogout = async () => {
+    console.log("Logout button clicked");
+    try {
+      await logout();
+      console.log("Logout completed successfully");
+    } catch (error) {
+      console.error("Logout error in sidebar:", error);
+    }
+  };
 
   return (
     <div className="sidebar">
@@ -34,8 +53,10 @@ const Sidebar = () => {
           <span>ADMIN</span>
         </div>
       )}
+      
+      {/* Menu utama berdasarkan role */}
       <div className="sidebar-menu">
-        {currentMenu.map(item => (
+        {menuItems.map(item => (
           <Link
             key={item.path}
             to={item.path}
@@ -45,9 +66,11 @@ const Sidebar = () => {
           </Link>
         ))}
       </div>
+
+      {/* Settings menu */}
       <div className="sidebar-settings">Settings</div>
       <div className="sidebar-menu">
-        {settings.map(item => (
+        {settingsMenu.map(item => (
           <Link
             key={item.path}
             to={item.path}
@@ -57,6 +80,22 @@ const Sidebar = () => {
           </Link>
         ))}
       </div>
+
+      {/* User info dan logout */}
+      <div className="sidebar-user-info">
+        <div className="user-role">
+          {userProfile?.role === 'admin' ? 'Admin' : 'User'}
+        </div>
+        <button 
+          onClick={handleLogout}
+          className="logout-button"
+          type="button"
+        >
+          Logout
+        </button>
+      </div>
+
+      {/* Kontak admin */}
       <div className="sidebar-admin">
         <div>Kontak Admin</div>
         <div className="sidebar-admin-contact">
@@ -67,4 +106,4 @@ const Sidebar = () => {
   );
 };
 
-export default Sidebar; 
+export default Sidebar;

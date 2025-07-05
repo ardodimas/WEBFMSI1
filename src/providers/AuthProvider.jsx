@@ -46,20 +46,49 @@ const AuthProvider = ({ children }) => {
 
   const login = async (access_token) => {
     await jwtStorage.storeToken(access_token);
-    getDataProfile();
-    navigate("/costumes", { replace: true });
+    
+    // Ambil data profile terlebih dahulu
+    try {
+      const resp = await getDataPrivate("/api/profile");
+      if (resp?.role) {
+        setUserProfile(resp);
+        setIsLoggedIn(true);
+        
+        // Redirect berdasarkan role
+        if (resp.role === 'admin') {
+          navigate("/katalog-admin", { replace: true });
+        } else {
+          navigate("/costumes", { replace: true });
+        }
+      } else {
+        setIsLoggedIn(false);
+        navigate("/login", { replace: true });
+      }
+    } catch (err) {
+      setIsLoggedIn(false);
+      console.log(err);
+      navigate("/login", { replace: true });
+    }
   };
 
-  const logout = () => {
-    logoutAPI()
-      .then((resp) => {
-        if (resp?.isLoggedOut) {
-          jwtStorage.removeItem();
-          setIsLoggedIn(false);
-          navigate("/login", { replace: true });
-        }
-      })
-      .catch((err) => console.log(err));
+  const logout = async () => {
+    try {
+      const resp = await logoutAPI();
+      console.log("Logout response:", resp);
+      
+      // Jika logout berhasil atau gagal, tetap bersihkan state lokal
+      jwtStorage.removeItem();
+      setIsLoggedIn(false);
+      setUserProfile({});
+      navigate("/login", { replace: true });
+    } catch (err) {
+      console.log("Logout error:", err);
+      // Fallback: bersihkan state lokal meskipun API gagal
+      jwtStorage.removeItem();
+      setIsLoggedIn(false);
+      setUserProfile({});
+      navigate("/login", { replace: true });
+    }
   };
 
   return (
