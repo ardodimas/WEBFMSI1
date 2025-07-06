@@ -13,6 +13,7 @@ import { Link } from "react-router-dom";
 import { AuthContext } from "../../providers/AuthProvider";
 import { GoogleOutlined, TwitterOutlined, FacebookOutlined } from "@ant-design/icons";
 import { sendData } from "../../utils/api";
+import "../Register/index";
 import "./login.css";
 
 const { Title, Text } = Typography;

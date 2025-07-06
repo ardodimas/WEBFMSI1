@@ -1,0 +1,78 @@
+/* Memastikan seluruh elemen tidak melebihi tinggi layar */
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;  /* Menyembunyikan scroll dari seluruh halaman */
+    box-sizing: border-box;
+  }
+  
+  /* Layout utama */
+  .register-layout {
+    min-height: 100vh;
+    overflow: hidden;  /* Menyembunyikan scroll */
+  }
+  
+  .register-row {
+    width: 100%;
+    height: 100%; /* Pastikan row mengisi seluruh tinggi layar */
+    padding-right: 30px;
+  }
+  
+  .register-content {
+    height: 100%;
+    background: url("/images/login-dragon.png") center center / cover no-repeat;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-left: 30px;
+    padding-top: 30px;
+    padding-bottom: 30px;
+    overflow: hidden;  /* Menyembunyikan scroll jika ada elemen yang keluar */
+  }
+  
+  .register-form-wrapper {
+    background-color: rgba(255, 230, 230, 0.8); /* transparansi 80% */
+    backdrop-filter: blur(5px);
+    height: auto; /* Pastikan tinggi form menyesuaikan dengan konten */
+    max-height: 100%; /* Menjaga agar form tidak melebihi layar */
+    padding: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 16px;
+    overflow: hidden;  /* Hindari scroll di form */
+  }
+  
+  .register-form-container {
+    width: 100%;
+    max-width: 400px;
+    box-sizing: border-box;
+  }
+  
+  .register-form {
+    margin-top: 20px;
+  }
+  
+  .register-button {
+    background-color: #a32033;
+    border: none;
+    width: 100%;
+    height: 40px;
+    font-weight: bold;
+  }
+  
+  .register-button:hover {
+    background-color: #871a2a !important;
+  }
+  
+  /* Media queries untuk tampilan lebih kecil */
+  @media (max-width: 900px) {
+    .register-container {
+      margin: 16px;
+      min-width: 0;
+      width: 100%;
+      max-width: 95vw;
+    }
+  }
+  
