@@ -34,16 +34,6 @@ const Sidebar = () => {
 
   const menuItems = getMenuItems();
 
-  // Handle logout dengan debugging
-  const handleLogout = async () => {
-    console.log("Logout button clicked");
-    try {
-      await logout();
-      console.log("Logout completed successfully");
-    } catch (error) {
-      console.error("Logout error in sidebar:", error);
-    }
-  };
 
   return (
     <div className="sidebar">
@@ -81,25 +71,19 @@ const Sidebar = () => {
         ))}
       </div>
 
-      {/* User info dan logout */}
-      <div className="sidebar-user-info">
-        <div className="user-role">
-          {userProfile?.role === 'admin' ? 'Admin' : 'User'}
-        </div>
-        <button 
-          onClick={handleLogout}
-          className="logout-button"
-          type="button"
-        >
-          Logout
-        </button>
-      </div>
-
       {/* Kontak admin */}
       <div className="sidebar-admin">
         <div>Kontak Admin</div>
         <div className="sidebar-admin-contact">
-          <span className="icon-phone"/> 089507406743
+          <span className="icon-phone"/>
+          <a
+            href="https://wa.me/6285784978009"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ color: 'white', marginLeft: 8, textDecoration: 'underline' }}
+          >
+            085784978009
+          </a>
         </div>
       </div>
     </div>
