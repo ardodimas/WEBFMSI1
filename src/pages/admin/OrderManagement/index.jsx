@@ -328,372 +328,382 @@ const OrderManagementPage = () => {
   }
 
   return (
-    <div className="order-management-page">
-      <div style={{ marginBottom: 24 }}>
-        <Title level={2}>Manajemen Pesanan</Title>
-        <Text type="secondary">Kelola semua pesanan pelanggan</Text>
-      </div>
+    <div className="order-management-page" style={{
+      width: '100%',
+      padding: '24px 0',
+      minHeight: '80vh',
+      boxSizing: 'border-box',
+      position: 'relative',
+      background: 'transparent'
+    }}>
+      <div style={{ margin: '0 auto', width: '100%', maxWidth: '100%', padding: '0 16px' }}>
+        <div style={{ marginBottom: 24 }}>
+          <Title level={2}>Manajemen Pesanan</Title>
+          <Text type="secondary">Kelola semua pesanan pelanggan</Text>
+        </div>
 
-      {/* Statistics Cards */}
-      <Row gutter={[16, 16]} style={{ marginBottom: 24 }}>
-        <Col xs={24} sm={12} md={4}>
-          <Card>
-            <Statistic
-              title="Total Pesanan"
-              value={stats.total}
-              prefix={<DollarOutlined />}
-            />
-          </Card>
-        </Col>
-        <Col xs={24} sm={12} md={4}>
-          <Card>
-            <Statistic
-              title="Pending"
-              value={stats.pending}
-              valueStyle={{ color: '#faad14' }}
-              prefix={<ClockCircleOutlined />}
-            />
-          </Card>
-        </Col>
-        <Col xs={24} sm={12} md={4}>
-          <Card>
-            <Statistic
-              title="Sudah Bayar"
-              value={stats.paid}
-              valueStyle={{ color: '#52c41a' }}
-              prefix={<CheckCircleOutlined />}
-            />
-          </Card>
-        </Col>
-        <Col xs={24} sm={12} md={4}>
-          <Card>
-            <Statistic
-              title="Selesai"
-              value={stats.completed}
-              valueStyle={{ color: '#1890ff' }}
-              prefix={<CheckCircleOutlined />}
-            />
-          </Card>
-        </Col>
-        <Col xs={24} sm={12} md={4}>
-          <Card>
-            <Statistic
-              title="Dibatalkan"
-              value={stats.cancelled}
-              valueStyle={{ color: '#ff4d4f' }}
-              prefix={<CloseCircleOutlined />}
-            />
-          </Card>
-        </Col>
-        <Col xs={24} sm={12} md={4}>
-          <Card>
-            <Statistic
-              title="Pelanggan Aktif"
-              value={orders.filter(order => order.status !== 'cancelled').length}
-              valueStyle={{ color: '#722ed1' }}
-              prefix={<UserOutlined />}
-            />
-          </Card>
-        </Col>
-      </Row>
-
-      {/* Filters */}
-      <Card style={{ marginBottom: 24 }}>
-        <Row gutter={[16, 16]} align="middle">
-          <Col xs={24} sm={12} md={6}>
-            <Input
-              placeholder="Cari pesanan..."
-              prefix={<SearchOutlined />}
-              value={filters.search}
-              onChange={(e) => setFilters({ ...filters, search: e.target.value })}
-            />
+        {/* Statistics Cards */}
+        <Row gutter={[16, 16]} style={{ marginBottom: 24 }}>
+          <Col xs={24} sm={12} md={4}>
+            <Card>
+              <Statistic
+                title="Total Pesanan"
+                value={stats.total}
+                prefix={<DollarOutlined />}
+              />
+            </Card>
           </Col>
           <Col xs={24} sm={12} md={4}>
-            <Select
-              placeholder="Status Pesanan"
-              style={{ width: '100%' }}
-              value={filters.status}
-              onChange={(value) => setFilters({ ...filters, status: value })}
-              allowClear
-            >
-              <Option value="pending">Pending</Option>
-              <Option value="confirmed">Confirmed</Option>
-              <Option value="processing">Processing</Option>
-              <Option value="completed">Completed</Option>
-              <Option value="cancelled">Cancelled</Option>
-            </Select>
+            <Card>
+              <Statistic
+                title="Pending"
+                value={stats.pending}
+                valueStyle={{ color: '#faad14' }}
+                prefix={<ClockCircleOutlined />}
+              />
+            </Card>
           </Col>
           <Col xs={24} sm={12} md={4}>
-            <Select
-              placeholder="Status Pembayaran"
-              style={{ width: '100%' }}
-              value={filters.paymentStatus}
-              onChange={(value) => setFilters({ ...filters, paymentStatus: value })}
-              allowClear
-            >
-              <Option value="unpaid">Unpaid</Option>
-              <Option value="paid">Paid</Option>
-              <Option value="pending">Pending</Option>
-            </Select>
-          </Col>
-          <Col xs={24} sm={12} md={6}>
-            <RangePicker
-              style={{ width: '100%' }}
-              placeholder={['Tanggal Mulai', 'Tanggal Akhir']}
-              value={filters.dateRange}
-              onChange={(dates) => setFilters({ ...filters, dateRange: dates })}
-            />
+            <Card>
+              <Statistic
+                title="Sudah Bayar"
+                value={stats.paid}
+                valueStyle={{ color: '#52c41a' }}
+                prefix={<CheckCircleOutlined />}
+              />
+            </Card>
           </Col>
           <Col xs={24} sm={12} md={4}>
-            <Button 
-              type="primary" 
-              icon={<FilterOutlined />}
-              onClick={() => setFilters({ status: "", paymentStatus: "", search: "", dateRange: null })}
-            >
-              Reset Filter
-            </Button>
+            <Card>
+              <Statistic
+                title="Selesai"
+                value={stats.completed}
+                valueStyle={{ color: '#1890ff' }}
+                prefix={<CheckCircleOutlined />}
+              />
+            </Card>
+          </Col>
+          <Col xs={24} sm={12} md={4}>
+            <Card>
+              <Statistic
+                title="Dibatalkan"
+                value={stats.cancelled}
+                valueStyle={{ color: '#ff4d4f' }}
+                prefix={<CloseCircleOutlined />}
+              />
+            </Card>
+          </Col>
+          <Col xs={24} sm={12} md={4}>
+            <Card>
+              <Statistic
+                title="Pelanggan Aktif"
+                value={orders.filter(order => order.status !== 'cancelled').length}
+                valueStyle={{ color: '#722ed1' }}
+                prefix={<UserOutlined />}
+              />
+            </Card>
           </Col>
         </Row>
-      </Card>
 
-      {/* Orders Table */}
-      <Card>
-        <Table
-          columns={columns}
-          dataSource={filteredOrders}
-          rowKey="id"
-          loading={loading}
-          pagination={{
-            pageSize: 10,
-            showSizeChanger: true,
-            showQuickJumper: true,
-            showTotal: (total, range) => 
-              `${range[0]}-${range[1]} dari ${total} pesanan`
-          }}
-          scroll={{ x: 1200 }}
-        />
-      </Card>
+        {/* Filters */}
+        <Card style={{ marginBottom: 24 }}>
+          <Row gutter={[16, 16]} align="middle">
+            <Col xs={24} sm={12} md={6}>
+              <Input
+                placeholder="Cari pesanan..."
+                prefix={<SearchOutlined />}
+                value={filters.search}
+                onChange={(e) => setFilters({ ...filters, search: e.target.value })}
+              />
+            </Col>
+            <Col xs={24} sm={12} md={4}>
+              <Select
+                placeholder="Status Pesanan"
+                style={{ width: '100%' }}
+                value={filters.status}
+                onChange={(value) => setFilters({ ...filters, status: value })}
+                allowClear
+              >
+                <Option value="pending">Pending</Option>
+                <Option value="confirmed">Confirmed</Option>
+                <Option value="processing">Processing</Option>
+                <Option value="completed">Completed</Option>
+                <Option value="cancelled">Cancelled</Option>
+              </Select>
+            </Col>
+            <Col xs={24} sm={12} md={4}>
+              <Select
+                placeholder="Status Pembayaran"
+                style={{ width: '100%' }}
+                value={filters.paymentStatus}
+                onChange={(value) => setFilters({ ...filters, paymentStatus: value })}
+                allowClear
+              >
+                <Option value="unpaid">Unpaid</Option>
+                <Option value="paid">Paid</Option>
+                <Option value="pending">Pending</Option>
+              </Select>
+            </Col>
+            <Col xs={24} sm={12} md={6}>
+              <RangePicker
+                style={{ width: '100%' }}
+                placeholder={['Tanggal Mulai', 'Tanggal Akhir']}
+                value={filters.dateRange}
+                onChange={(dates) => setFilters({ ...filters, dateRange: dates })}
+              />
+            </Col>
+            <Col xs={24} sm={12} md={4}>
+              <Button 
+                type="primary" 
+                icon={<FilterOutlined />}
+                onClick={() => setFilters({ status: "", paymentStatus: "", search: "", dateRange: null })}
+              >
+                Reset Filter
+              </Button>
+            </Col>
+          </Row>
+        </Card>
 
-      {/* Order Detail Modal */}
-      <Modal
-        title={`Detail Pesanan #${selectedOrder?.id}`}
-        open={isModalVisible}
-        onCancel={() => setIsModalVisible(false)}
-        footer={null}
-        width={800}
-      >
-        {selectedOrder && (
-          <div>
-            <Descriptions title="Informasi Pesanan" bordered column={2}>
-              <Descriptions.Item label="ID Pesanan">
-                <Text strong>#{selectedOrder.id}</Text>
-              </Descriptions.Item>
-              <Descriptions.Item label="Tanggal Pesanan">
-                {new Date(selectedOrder.created_at).toLocaleDateString('id-ID')}
-              </Descriptions.Item>
-              <Descriptions.Item label="Status Pesanan">
-                <Tag color={orderStatusColor[selectedOrder.status]}>
-                  {selectedOrder.status?.toUpperCase()}
-                </Tag>
-              </Descriptions.Item>
-              <Descriptions.Item label="Status Pembayaran">
-                <Tag color={statusColor[selectedOrder.payment_status]}>
-                  {selectedOrder.payment_status?.toUpperCase()}
-                </Tag>
-              </Descriptions.Item>
-              <Descriptions.Item label="Total Harga" span={2}>
-                <Text strong style={{ fontSize: 18, color: '#1890ff' }}>
-                  Rp {selectedOrder.total_price?.toLocaleString()}
-                </Text>
-              </Descriptions.Item>
-            </Descriptions>
+        {/* Orders Table */}
+        <Card>
+          <Table
+            columns={columns}
+            dataSource={filteredOrders}
+            rowKey="id"
+            loading={loading}
+            pagination={{
+              pageSize: 10,
+              showSizeChanger: true,
+              showQuickJumper: true,
+              showTotal: (total, range) => 
+                `${range[0]}-${range[1]} dari ${total} pesanan`
+            }}
+            scroll={{ x: 1200 }}
+          />
+        </Card>
 
-            <Divider />
-
-            <Descriptions title="Informasi Pelanggan" bordered column={2}>
-              <Descriptions.Item label="Nama">
-                {selectedOrder.user_name || 'N/A'}
-              </Descriptions.Item>
-              <Descriptions.Item label="Email">
-                {selectedOrder.user_email || 'N/A'}
-              </Descriptions.Item>
-              <Descriptions.Item label="Alamat" span={2}>
-                {selectedOrder.address || 'N/A'}
-              </Descriptions.Item>
-            </Descriptions>
-
-            <Divider />
-
-            <Descriptions title="Detail Sewa" bordered column={2}>
-              <Descriptions.Item label="Tanggal Sewa">
-                {selectedOrder.rental_date}
-              </Descriptions.Item>
-              <Descriptions.Item label="Tanggal Kembali">
-                {selectedOrder.return_date}
-              </Descriptions.Item>
-              <Descriptions.Item label="Metode Pembayaran">
-                {selectedOrder.payment_method?.toUpperCase() || 'N/A'}
-              </Descriptions.Item>
-            </Descriptions>
-
-            <Divider />
-
-            {/* Bukti Pembayaran */}
-            {selectedOrder?.payment && selectedOrder.payment.proof_image && (
-              <div style={{ marginBottom: 24 }}>
-                <Title level={5}>Bukti Pembayaran</Title>
-                <Button
-                  onClick={() => {
-                    // Coba static folder dulu, jika gagal pakai route khusus, jika gagal pakai base64
-                    const staticUrl = `${import.meta.env.VITE_REACT_APP_API_URL}/${selectedOrder.payment.proof_image}`;
-                    const routeUrl = `${import.meta.env.VITE_REACT_APP_API_URL}/api/payment-proof/${selectedOrder.payment.proof_image.split('/').pop()}`;
-                    const base64Url = `${import.meta.env.VITE_REACT_APP_API_URL}/api/payment-proof-base64/${selectedOrder.payment.proof_image.split('/').pop()}`;
-                    
-                    // Coba static URL dulu
-                    fetch(staticUrl, { method: 'HEAD' })
-                      .then(response => {
-                        if (response.ok) {
-                          setImageUrl(staticUrl);
-                          setShowImageModal(true);
-                        } else {
-                          // Jika static gagal, coba route khusus
-                          return fetch(routeUrl, { method: 'HEAD' });
-                        }
-                      })
-                      .then(response => {
-                        if (response && response.ok) {
-                          setImageUrl(routeUrl);
-                          setShowImageModal(true);
-                        } else {
-                          // Jika route khusus gagal, pakai base64
-                          return fetch(base64Url);
-                        }
-                      })
-                      .then(response => {
-                        if (response && response.ok) {
-                          return response.json();
-                        } else {
-                          throw new Error('All methods failed');
-                        }
-                      })
-                      .then(data => {
-                        if (data && data.data) {
-                          // Base64 image
-                          setImageUrl(`data:${data.mime_type};base64,${data.data}`);
-                          setShowImageModal(true);
-                        }
-                      })
-                      .catch(() => {
-                        // Jika semua gagal, pakai base64 sebagai fallback
-                        fetch(base64Url)
-                          .then(response => response.json())
-                          .then(data => {
-                            if (data && data.data) {
-                              setImageUrl(`data:${data.mime_type};base64,${data.data}`);
-                              setShowImageModal(true);
-                            }
-                          })
-                          .catch(() => {
-                            message.error('Gagal memuat gambar bukti pembayaran');
-                          });
-                      });
-                  }}
-                  type="primary"
-                >
-                  Lihat Gambar
-                </Button>
-              </div>
-            )}
-
+        {/* Order Detail Modal */}
+        <Modal
+          title={`Detail Pesanan #${selectedOrder?.id}`}
+          open={isModalVisible}
+          onCancel={() => setIsModalVisible(false)}
+          footer={null}
+          width={900}
+          style={{ maxWidth: '98vw', top: 40 }}
+        >
+          {selectedOrder && (
             <div>
-              <Title level={4}>Item Pesanan</Title>
-              {selectedOrder.order_items?.map((item, index) => (
-                <Card key={index} style={{ marginBottom: 16 }}>
-                  <Row gutter={16}>
-                    <Col span={8}>
-                      <Text strong>Nama Kostum:</Text>
-                      <br />
-                      {item.costume_name}
-                    </Col>
-                    <Col span={4}>
-                      <Text strong>Ukuran:</Text>
-                      <br />
-                      {item.size_name}
-                    </Col>
-                    <Col span={4}>
-                      <Text strong>Jumlah:</Text>
-                      <br />
-                      {item.quantity}
-                    </Col>
-                    <Col span={4}>
-                      <Text strong>Harga Satuan:</Text>
-                      <br />
-                      Rp {item.price_snapshot?.toLocaleString()}
-                    </Col>
-                    <Col span={4}>
-                      <Text strong>Total:</Text>
-                      <br />
-                      <Text style={{ color: '#1890ff' }}>
-                        Rp {item.total_price?.toLocaleString()}
-                      </Text>
-                    </Col>
-                  </Row>
-                </Card>
-              ))}
+              <Descriptions title="Informasi Pesanan" bordered column={3}>
+                <Descriptions.Item label="ID Pesanan">
+                  <Text strong>#{selectedOrder.id}</Text>
+                </Descriptions.Item>
+                <Descriptions.Item label="Tanggal Pesanan">
+                  {new Date(selectedOrder.created_at).toLocaleDateString('id-ID')}
+                </Descriptions.Item>
+                <Descriptions.Item label="Status Pesanan">
+                  <Tag color={orderStatusColor[selectedOrder.status]}>
+                    {selectedOrder.status?.toUpperCase()}
+                  </Tag>
+                </Descriptions.Item>
+                <Descriptions.Item label="Status Pembayaran">
+                  <Tag color={statusColor[selectedOrder.payment_status]}>
+                    {selectedOrder.payment_status?.toUpperCase()}
+                  </Tag>
+                </Descriptions.Item>
+                <Descriptions.Item label="Total Harga" span={3}>
+                  <Text strong style={{ fontSize: 18, color: '#1890ff' }}>
+                    Rp {selectedOrder.total_price?.toLocaleString()}
+                  </Text>
+                </Descriptions.Item>
+              </Descriptions>
+
+              <Divider />
+
+              <Descriptions title="Informasi Pelanggan" bordered column={3}>
+                <Descriptions.Item label="Nama">
+                  {selectedOrder.user_name || 'N/A'}
+                </Descriptions.Item>
+                <Descriptions.Item label="Email">
+                  {selectedOrder.user_email || 'N/A'}
+                </Descriptions.Item>
+                <Descriptions.Item label="Alamat" span={3}>
+                  {selectedOrder.address || 'N/A'}
+                </Descriptions.Item>
+              </Descriptions>
+
+              <Divider />
+
+              <Descriptions title="Detail Sewa" bordered column={3}>
+                <Descriptions.Item label="Tanggal Sewa">
+                  {selectedOrder.rental_date}
+                </Descriptions.Item>
+                <Descriptions.Item label="Tanggal Kembali">
+                  {selectedOrder.return_date}
+                </Descriptions.Item>
+                <Descriptions.Item label="Metode Pembayaran">
+                  {selectedOrder.payment_method?.toUpperCase() || 'N/A'}
+                </Descriptions.Item>
+              </Descriptions>
+
+              <Divider />
+
+              {/* Bukti Pembayaran */}
+              {selectedOrder?.payment && selectedOrder.payment.proof_image && (
+                <div style={{ marginBottom: 24 }}>
+                  <Title level={5}>Bukti Pembayaran</Title>
+                  <Button
+                    onClick={() => {
+                      // Coba static folder dulu, jika gagal pakai route khusus, jika gagal pakai base64
+                      const staticUrl = `${import.meta.env.VITE_REACT_APP_API_URL}/${selectedOrder.payment.proof_image}`;
+                      const routeUrl = `${import.meta.env.VITE_REACT_APP_API_URL}/api/payment-proof/${selectedOrder.payment.proof_image.split('/').pop()}`;
+                      const base64Url = `${import.meta.env.VITE_REACT_APP_API_URL}/api/payment-proof-base64/${selectedOrder.payment.proof_image.split('/').pop()}`;
+                      
+                      // Coba static URL dulu
+                      fetch(staticUrl, { method: 'HEAD' })
+                        .then(response => {
+                          if (response.ok) {
+                            setImageUrl(staticUrl);
+                            setShowImageModal(true);
+                          } else {
+                            // Jika static gagal, coba route khusus
+                            return fetch(routeUrl, { method: 'HEAD' });
+                          }
+                        })
+                        .then(response => {
+                          if (response && response.ok) {
+                            setImageUrl(routeUrl);
+                            setShowImageModal(true);
+                          } else {
+                            // Jika route khusus gagal, pakai base64
+                            return fetch(base64Url);
+                          }
+                        })
+                        .then(response => {
+                          if (response && response.ok) {
+                            return response.json();
+                          } else {
+                            throw new Error('All methods failed');
+                          }
+                        })
+                        .then(data => {
+                          if (data && data.data) {
+                            // Base64 image
+                            setImageUrl(`data:${data.mime_type};base64,${data.data}`);
+                            setShowImageModal(true);
+                          }
+                        })
+                        .catch(() => {
+                          // Jika semua gagal, pakai base64 sebagai fallback
+                          fetch(base64Url)
+                            .then(response => response.json())
+                            .then(data => {
+                              if (data && data.data) {
+                                setImageUrl(`data:${data.mime_type};base64,${data.data}`);
+                                setShowImageModal(true);
+                              }
+                            })
+                            .catch(() => {
+                              message.error('Gagal memuat gambar bukti pembayaran');
+                            });
+                        });
+                    }}
+                    type="primary"
+                  >
+                    Lihat Gambar
+                  </Button>
+                </div>
+              )}
+
+              <div>
+                <Title level={4}>Item Pesanan</Title>
+                {selectedOrder.order_items?.map((item, index) => (
+                  <Card key={index} style={{ marginBottom: 16 }}>
+                    <Row gutter={16}>
+                      <Col span={8}>
+                        <Text strong>Nama Kostum:</Text>
+                        <br />
+                        {item.costume_name}
+                      </Col>
+                      <Col span={4}>
+                        <Text strong>Ukuran:</Text>
+                        <br />
+                        {item.size_name}
+                      </Col>
+                      <Col span={4}>
+                        <Text strong>Jumlah:</Text>
+                        <br />
+                        {item.quantity}
+                      </Col>
+                      <Col span={4}>
+                        <Text strong>Harga Satuan:</Text>
+                        <br />
+                        Rp {item.price_snapshot?.toLocaleString()}
+                      </Col>
+                      <Col span={4}>
+                        <Text strong>Total:</Text>
+                        <br />
+                        <Text style={{ color: '#1890ff' }}>
+                          Rp {item.total_price?.toLocaleString()}
+                        </Text>
+                      </Col>
+                    </Row>
+                  </Card>
+                ))}
+              </div>
+
+              <Divider />
+
+              <div style={{ textAlign: 'center' }}>
+                <Space>
+                  <Select
+                    placeholder="Update Status Pesanan"
+                    value={selectedOrder.status}
+                    onChange={(value) => {
+                      handleStatusUpdate(selectedOrder.id, value);
+                      setIsModalVisible(false);
+                    }}
+                    style={{ width: 150 }}
+                  >
+                    <Option value="pending">Pending</Option>
+                    <Option value="confirmed">Confirmed</Option>
+                    <Option value="processing">Processing</Option>
+                    <Option value="completed">Completed</Option>
+                    <Option value="cancelled">Cancelled</Option>
+                  </Select>
+                  <Select
+                    placeholder="Update Status Pembayaran"
+                    value={selectedOrder.payment_status}
+                    onChange={(value) => {
+                      handlePaymentStatusUpdate(selectedOrder.id, value);
+                      setIsModalVisible(false);
+                    }}
+                    style={{ width: 150 }}
+                  >
+                    <Option value="unpaid">Unpaid</Option>
+                    <Option value="paid">Paid</Option>
+                    <Option value="pending">Pending</Option>
+                  </Select>
+                </Space>
+              </div>
             </div>
+          )}
+        </Modal>
 
-            <Divider />
-
-            <div style={{ textAlign: 'center' }}>
-              <Space>
-                <Select
-                  placeholder="Update Status Pesanan"
-                  value={selectedOrder.status}
-                  onChange={(value) => {
-                    handleStatusUpdate(selectedOrder.id, value);
-                    setIsModalVisible(false);
-                  }}
-                  style={{ width: 150 }}
-                >
-                  <Option value="pending">Pending</Option>
-                  <Option value="confirmed">Confirmed</Option>
-                  <Option value="processing">Processing</Option>
-                  <Option value="completed">Completed</Option>
-                  <Option value="cancelled">Cancelled</Option>
-                </Select>
-                <Select
-                  placeholder="Update Status Pembayaran"
-                  value={selectedOrder.payment_status}
-                  onChange={(value) => {
-                    handlePaymentStatusUpdate(selectedOrder.id, value);
-                    setIsModalVisible(false);
-                  }}
-                  style={{ width: 150 }}
-                >
-                  <Option value="unpaid">Unpaid</Option>
-                  <Option value="paid">Paid</Option>
-                  <Option value="pending">Pending</Option>
-                </Select>
-              </Space>
-            </div>
-          </div>
-        )}
-      </Modal>
-
-      {/* Tambahkan modal untuk gambar bukti pembayaran */}
-      <Modal
-        open={showImageModal}
-        onCancel={() => setShowImageModal(false)}
-        footer={null}
-        title="Bukti Pembayaran"
-        centered
-      >
-        <img
-          src={imageUrl}
-          alt="Bukti Pembayaran"
-          style={{ width: "100%", maxWidth: 500, borderRadius: 8, border: "1px solid #eee" }}
-        />
-      </Modal>
+        {/* Tambahkan modal untuk gambar bukti pembayaran */}
+        <Modal
+          open={showImageModal}
+          onCancel={() => setShowImageModal(false)}
+          footer={null}
+          title="Bukti Pembayaran"
+          centered
+        >
+          <img
+            src={imageUrl}
+            alt="Bukti Pembayaran"
+            style={{ width: "100%", maxWidth: 500, borderRadius: 8, border: "1px solid #eee" }}
+          />
+        </Modal>
+      </div>
     </div>
   );
 };

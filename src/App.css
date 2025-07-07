@@ -34,9 +34,6 @@ body, #root {
   min-height: calc(100vh - 64px);
   margin-top: 64px;
   padding: 0 24px;
-  max-width: 1200px;
-  margin-left: auto;
-  margin-right: auto;
   width: 100%;
 }
 
@@ -126,5 +123,11 @@ body, #root {
   .main-header {
     padding: 16px 0;
   }
+}
+
+html, body, #root, .app-main, .main-content {
+  height: auto !important;
+  min-height: 100vh;
+  overflow-y: auto !important;
 }
 
