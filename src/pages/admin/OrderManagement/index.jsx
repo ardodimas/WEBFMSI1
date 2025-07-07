@@ -1,6 +1,6 @@
 import { useEffect, useState, useContext } from "react";
 import { AuthContext } from "../../../providers/AuthProvider";
-import { getDataPrivate, editDataPrivatePut } from "../../../utils/api";
+import { getDataPrivate, editDataPrivatePut, returnOrderPrivate } from "../../../utils/api";
 import { 
   Card, 
   Row, 
@@ -77,7 +77,8 @@ const OrderManagementPage = () => {
     pending: 0,
     paid: 0,
     completed: 0,
-    cancelled: 0
+    cancelled: 0,
+    returned: 0
   });
 
   useEffect(() => {
@@ -103,7 +104,8 @@ const OrderManagementPage = () => {
         pending: data.filter(order => order.status === "pending").length,
         paid: data.filter(order => order.payment_status === "paid").length,
         completed: data.filter(order => order.status === "completed").length,
-        cancelled: data.filter(order => order.status === "cancelled").length
+        cancelled: data.filter(order => order.status === "cancelled").length,
+        returned: data.filter(order => order.status === "returned").length
       };
       setStats(statsData);
     } catch (error) {
@@ -176,6 +178,20 @@ const OrderManagementPage = () => {
     } catch (error) {
       console.error("Error updating payment status:", error);
       message.error("Gagal mengubah status pembayaran");
+    }
+  };
+
+  const handleReturnOrder = async (orderId) => {
+    try {
+      const res = await returnOrderPrivate(orderId);
+      if (res && res.message) {
+        message.success(res.message);
+        fetchOrders();
+      } else {
+        message.error(res?.error || 'Gagal mengembalikan pesanan');
+      }
+    } catch (err) {
+      message.error('Gagal mengembalikan pesanan');
     }
   };
 
@@ -267,13 +283,31 @@ const OrderManagementPage = () => {
       title: 'Tanggal Sewa',
       dataIndex: 'rental_date',
       key: 'rental_date',
-      render: (date) => (
+      render: (_, record) => (
         <Space direction="vertical" size={0}>
-          <Text>Dari: {date}</Text>
+          <Text>Dari: {record.rental_date}</Text>
           <Text type="secondary" style={{ fontSize: 12 }}>
-            Sampai: {date} {/* You might want to add return_date field */}
+            Sampai: {record.return_date}
           </Text>
         </Space>
+      )
+    },
+    {
+      title: 'Keterlambatan',
+      key: 'late',
+      render: (_, record) => (
+        record.status === 'returned' ? (
+          record.is_late ? (
+            <Tag color="red">
+              Telat {record.late_days} hari
+              <br />Denda: Rp {record.late_fee?.toLocaleString()}
+            </Tag>
+          ) : (
+            <Tag color="green">Tepat Waktu</Tag>
+          )
+        ) : (
+          <Tag color="default">-</Tag>
+        )
       )
     },
     {
@@ -289,30 +323,43 @@ const OrderManagementPage = () => {
           >
             Detail
           </Button>
-          <Select
-            size="small"
-            style={{ width: 120 }}
-            placeholder="Status"
-            value={record.status}
-            onChange={(value) => handleStatusUpdate(record.id, value)}
-          >
-            <Option value="pending">Pending</Option>
-            <Option value="confirmed">Confirmed</Option>
-            <Option value="processing">Processing</Option>
-            <Option value="completed">Completed</Option>
-            <Option value="cancelled">Cancelled</Option>
-          </Select>
-          <Select
-            size="small"
-            style={{ width: 120 }}
-            placeholder="Pembayaran"
-            value={record.payment_status}
-            onChange={(value) => handlePaymentStatusUpdate(record.id, value)}
-          >
-            <Option value="unpaid">Unpaid</Option>
-            <Option value="paid">Paid</Option>
-            <Option value="pending">Pending</Option>
-          </Select>
+          {record.status !== 'returned' && (
+            <>
+              <Select
+                size="small"
+                style={{ width: 120 }}
+                placeholder="Status"
+                value={record.status}
+                onChange={(value) => handleStatusUpdate(record.id, value)}
+              >
+                <Option value="pending">Pending</Option>
+                <Option value="confirmed" disabled={record.payment_status !== 'paid'}>Confirmed</Option>
+                <Option value="processing" disabled={record.payment_status !== 'paid'}>Processing</Option>
+                <Option value="completed" disabled={record.payment_status !== 'paid'}>Completed</Option>
+                <Option value="cancelled">Cancelled</Option>
+              </Select>
+              <Select
+                size="small"
+                style={{ width: 120 }}
+                placeholder="Pembayaran"
+                value={record.payment_status}
+                onChange={(value) => handlePaymentStatusUpdate(record.id, value)}
+              >
+                <Option value="unpaid">Unpaid</Option>
+                <Option value="paid">Paid</Option>
+                <Option value="pending">Pending</Option>
+              </Select>
+              {record.status !== 'returned' && record.status === 'completed' && (
+                <Button
+                  type="default"
+                  size="small"
+                  onClick={() => handleReturnOrder(record.id)}
+                >
+                  Kembalikan
+                </Button>
+              )}
+            </>
+          )}
         </Space>
       )
     }
@@ -396,10 +443,10 @@ const OrderManagementPage = () => {
           <Col xs={24} sm={12} md={4}>
             <Card>
               <Statistic
-                title="Pelanggan Aktif"
-                value={orders.filter(order => order.status !== 'cancelled').length}
+                title="Kostum Dikembalikan"
+                value={stats.returned}
                 valueStyle={{ color: '#722ed1' }}
-                prefix={<UserOutlined />}
+                prefix={<CheckCircleOutlined />}
               />
             </Card>
           </Col>
@@ -665,9 +712,9 @@ const OrderManagementPage = () => {
                     style={{ width: 150 }}
                   >
                     <Option value="pending">Pending</Option>
-                    <Option value="confirmed">Confirmed</Option>
-                    <Option value="processing">Processing</Option>
-                    <Option value="completed">Completed</Option>
+                    <Option value="confirmed" disabled={selectedOrder.payment_status !== 'paid'}>Confirmed</Option>
+                    <Option value="processing" disabled={selectedOrder.payment_status !== 'paid'}>Processing</Option>
+                    <Option value="completed" disabled={selectedOrder.payment_status !== 'paid'}>Completed</Option>
                     <Option value="cancelled">Cancelled</Option>
                   </Select>
                   <Select
@@ -685,6 +732,26 @@ const OrderManagementPage = () => {
                   </Select>
                 </Space>
               </div>
+
+              <Divider />
+
+              <Descriptions title="Keterlambatan" bordered column={3}>
+                <Descriptions.Item label="Status">
+                  {selectedOrder.is_late ? (
+                    <Tag color="red">Telat</Tag>
+                  ) : (
+                    <Tag color="green">Tepat Waktu</Tag>
+                  )}
+                </Descriptions.Item>
+                <Descriptions.Item label="Jumlah Hari">
+                  {selectedOrder.late_days}
+                </Descriptions.Item>
+                <Descriptions.Item label="Denda">
+                  Rp {selectedOrder.late_fee?.toLocaleString()}
+                </Descriptions.Item>
+              </Descriptions>
+
+              <Divider />
             </div>
           )}
         </Modal>

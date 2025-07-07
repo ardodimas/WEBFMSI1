@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, Typography, Button, Upload, message } from 'antd';
 import { useNavigate, useParams } from 'react-router-dom';
 import { UploadOutlined } from '@ant-design/icons';
-import { sendDataWithFile } from '../../utils/api';
+import { sendDataWithFile, getDataPrivate } from '../../utils/api';
 import qrisImage from '../../assets/title.jpg';
 
 const { Title, Text } = Typography;
@@ -12,6 +12,17 @@ const QRISPaymentPage = () => {
   const { id } = useParams(); // order id
   const [fileList, setFileList] = useState([]);
   const [uploading, setUploading] = useState(false);
+  const [order, setOrder] = useState(null);
+
+  useEffect(() => {
+    if (id) {
+      getDataPrivate(`/api/orders/${id}`)
+        .then((data) => setOrder(data))
+        .catch((err) => {
+          message.error('Gagal mengambil data pesanan');
+        });
+    }
+  }, [id]);
 
   const handleUpload = async () => {
     if (fileList.length === 0) {
@@ -43,6 +54,14 @@ const QRISPaymentPage = () => {
           alt="QRIS QR Code"
           style={{ width: '90%', maxWidth: 320, marginBottom: 16, borderRadius: 8, border: '1px solid #eee' }}
         />
+        {order && (
+          <div style={{ marginBottom: 16 }}>
+            <Text strong>Total Pembayaran: </Text>
+            <Text type="danger" strong>
+              Rp {order.total_price?.toLocaleString('id-ID')}
+            </Text>
+          </div>
+        )}
         <div style={{ marginBottom: 16 }}>
           <Text strong>Scan QR di atas menggunakan aplikasi pembayaran yang mendukung QRIS.</Text>
           <br />
