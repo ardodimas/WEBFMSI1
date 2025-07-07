@@ -1,19 +1,5 @@
-<<<<<<< HEAD
-import { Routes, Route, useLocation } from 'react-router-dom'
-import Navbar from './components/Navbar'
-import './App.css'
-import Profile from './pages/Profile'
-import Katalog from './pages/katalog'
-<<<<<<< HEAD
-import AdminDashboard from './pages/admin'
-import Home from './pages/home'
-=======
-import LoginPage from './pages/login/LoginPage'
-import Dashboard from './pages/Dashboard/Dashboard'
-
-=======
 import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
-import Sidebar from './Sidebar';
+import Navbar from './components/Navbar';
 import './App.css';
 import Profile from './pages/Profile';
 import Katalog from './pages/katalog';
@@ -27,7 +13,6 @@ import KatalogAdmin from './pages/Katalog_Admin';
 import RegisterPage from './pages/Register';
 import { useContext } from "react";
 import { AuthContext } from "./providers/AuthProvider";
->>>>>>> 66540431b895c07c0410c2dc5c76676fde18b506
 
 const pageTitles = {
   '/dashboard': 'Dashboard',
@@ -35,12 +20,6 @@ const pageTitles = {
   '/pesanan': 'Pesanan',
   '/transfer': 'Transfer',
   '/profile': 'Profile',
-<<<<<<< HEAD
-}
->>>>>>> 10b97cdb98ac0466c4c657c8ec8632c109c4883c
-
-function MainContent() {
-=======
   '/admin/orders': 'Manajemen Pesanan',
   '/katalog-admin': 'Katalog Admin'
 };
@@ -98,25 +77,9 @@ const ProtectedRoute = ({ children, allowedRoles = [] }) => {
 function MainContent() {
   const location = useLocation();
   const title = pageTitles[location.pathname] || 'Katalog';
-
->>>>>>> 66540431b895c07c0410c2dc5c76676fde18b506
   return (
     <div className="main-content">
       <Routes>
-<<<<<<< HEAD
-<<<<<<< HEAD
-        <Route path="/" element={<Home />} />
-=======
-        <Route path="/" element={<LoginPage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/dashboard" element={<Dashboard />} />
->>>>>>> 10b97cdb98ac0466c4c657c8ec8632c109c4883c
-        <Route path="/katalog" element={<Katalog />} />
-        <Route path="/pesanan" element={<div>Ini halaman Pesanan</div>} />
-        <Route path="/kontak" element={<div>Ini halaman Kontak</div>} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/admin" element={<AdminDashboard />} />
-=======
         {/* User */}
         <Route 
           path="/costumes" 
@@ -158,7 +121,6 @@ function MainContent() {
         {/* Redirect */}
         <Route path="/" element={<Navigate to="/costumes" replace />} />
         <Route path="/dashboard" element={<Navigate to="/costumes" replace />} />
->>>>>>> 66540431b895c07c0410c2dc5c76676fde18b506
       </Routes>
     </div>
   );

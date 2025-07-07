@@ -3,6 +3,7 @@ import { useContext, useState, useEffect } from "react";
 import { Modal, Button, Spin, Form, Input, message, Avatar } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 import { AuthContext } from "../../providers/AuthProvider";
+import { editDataPrivatePut } from "../../utils/api";
 
 import './Profile.css';
 import React from 'react';
@@ -24,20 +25,22 @@ export default function Profile() {
   useEffect(() => {
     if (userProfile?.id) {
       const savedAddress = localStorage.getItem(`userAddress_${userProfile.id}`);
-      const savedPhone = localStorage.getItem(`userPhone_${userProfile.id}`);
       if (savedAddress) {
         setAddress(savedAddress);
       } else {
-        // Set alamat default jika belum ada
         setAddress('Jalan Nuri GG 1 NO 2 Kaliuntu, di samping kober pelang Permata Salon');
       }
-      if (savedPhone) {
-        setPhone(savedPhone);
-      } else {
-        setPhone(userProfile?.phone || '');
-      }
     }
-  }, [userProfile?.id, userProfile?.phone]);
+  }, [userProfile?.id]);
+
+  // Ambil nomor telepon dari backend (userProfile.phone)
+  useEffect(() => {
+    if (userProfile?.phone) {
+      setPhone(userProfile.phone);
+    } else {
+      setPhone('');
+    }
+  }, [userProfile?.phone]);
 
   const handleEditAlamat = () => {
     editAddressForm.setFieldsValue({ address: address });
@@ -48,13 +51,10 @@ export default function Profile() {
     try {
       const values = await editAddressForm.validateFields();
       const newAddress = values.address;
-      
-      // Simpan ke localStorage berdasarkan user ID
       if (userProfile?.id) {
         localStorage.setItem(`userAddress_${userProfile.id}`, newAddress);
         setAddress(newAddress);
         setIsEditAddressModalOpen(false);
-        
         message.success('Alamat berhasil diperbarui!');
       } else {
         message.error('User ID tidak ditemukan');
@@ -75,15 +75,17 @@ export default function Profile() {
     setIsEditPhoneModalOpen(true);
   };
 
+  // Update nomor telepon ke backend
   const handleSavePhone = async () => {
     try {
       const values = await editPhoneForm.validateFields();
       const newPhone = values.phone;
       if (userProfile?.id) {
-        localStorage.setItem(`userPhone_${userProfile.id}`, newPhone);
+        await editDataPrivatePut(`/api/users/${userProfile.id}`, { phone: newPhone });
         setPhone(newPhone);
         setIsEditPhoneModalOpen(false);
         message.success('Nomor telepon berhasil diperbarui!');
+        // Optional: reload halaman atau profile jika ingin update AuthContext
       } else {
         message.error('User ID tidak ditemukan');
       }
@@ -107,7 +109,7 @@ export default function Profile() {
     setConfirmLoading(true);
     try {
       await logout(); // Gunakan logout dari AuthContext
-      setTimeout(() => {
+    setTimeout(() => {
         setOpen(false);
         setConfirmLoading(false);
       }, 2000);
@@ -119,7 +121,6 @@ export default function Profile() {
   };
   
   const handleCancel = () => {
-    console.log('Tombol cancel diklik');
     setOpen(false);
   };
 
