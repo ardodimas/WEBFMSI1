@@ -13,6 +13,7 @@ import KatalogAdmin from './pages/Katalog_Admin';
 import RegisterPage from './pages/Register';
 import { useContext } from "react";
 import { AuthContext } from "./providers/AuthProvider";
+import Home from './pages/home';
 
 const pageTitles = {
   '/dashboard': 'Dashboard',
@@ -80,6 +81,8 @@ function MainContent() {
   return (
     <div className="main-content">
       <Routes>
+        {/* Home Public */}
+        <Route path="/home" element={<Home />} />
         {/* User */}
         <Route 
           path="/costumes" 

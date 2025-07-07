@@ -17,8 +17,8 @@ const Navbar = () => {
   const location = useLocation();
 
   const menuItems = [
-    { key: '/', label: 'Home', icon: <HomeOutlined /> },
-    { key: '/katalog', label: 'Katalog', icon: <ShoppingOutlined /> },
+    { key: '/home', label: 'Home', icon: <HomeOutlined /> },
+    { key: '/costumes', label: 'Katalog', icon: <ShoppingOutlined /> },
     { key: '/pesanan', label: 'Pesanan', icon: <ShoppingCartOutlined /> },
     { key: '/kontak', label: 'Kontak', icon: <PhoneOutlined /> },
   ];
@@ -52,7 +52,7 @@ const Navbar = () => {
             onClick={() => setIsDrawerOpen(true)}
             className="menu-button"
           />
-          <Link to="/" className="navbar-brand">
+          <Link to="/home" className="navbar-brand">
             My Costum
           </Link>
         </div>
