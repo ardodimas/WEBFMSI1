@@ -98,7 +98,7 @@ const Katalog = () => {
       const days = end.diff(start, "day");
 
       if (days >= 0) {
-        const total = (days) * quantity * pricePerDay;
+        const total = (days) * quantity * pricePerDay + 300000;
         setTotalPrice(total);
       } else {
         setTotalPrice(0);
