@@ -299,13 +299,15 @@ export const sendDataWithFile = async (endpoint, formData, token = null) => {
   }
 };
 
-export const returnOrderPrivate = async (orderId) => {
+export const returnOrderPrivate = async (orderId, data = {}) => {
   let token = await jwtStorage.retrieveToken();
   return fetch(REACT_APP_API_URL + `/api/orders/${orderId}/return`, {
     method: "POST",
     headers: {
       Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
     },
+    body: JSON.stringify(data),
   })
     .then((response) =>
       response.status >= 200 &&

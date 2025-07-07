@@ -81,6 +81,12 @@ const OrderManagementPage = () => {
     returned: 0
   });
 
+  // Tambah state untuk modal pengembalian dan damage
+  const [returnModalVisible, setReturnModalVisible] = useState(false);
+  const [returningOrderId, setReturningOrderId] = useState(null);
+  const [damageLevel, setDamageLevel] = useState('none');
+  const [returnLoading, setReturnLoading] = useState(false);
+
   useEffect(() => {
     if (userProfile?.role === "admin") {
       fetchOrders();
@@ -181,9 +187,16 @@ const OrderManagementPage = () => {
     }
   };
 
-  const handleReturnOrder = async (orderId) => {
+  const handleReturnOrder = (orderId) => {
+    setReturningOrderId(orderId);
+    setDamageLevel('none');
+    setReturnModalVisible(true);
+  };
+
+  const confirmReturnOrder = async () => {
+    setReturnLoading(true);
     try {
-      const res = await returnOrderPrivate(orderId);
+      const res = await returnOrderPrivate(returningOrderId, { damage_level: damageLevel });
       if (res && res.message) {
         message.success(res.message);
         fetchOrders();
@@ -192,6 +205,10 @@ const OrderManagementPage = () => {
       }
     } catch (err) {
       message.error('Gagal mengembalikan pesanan');
+    } finally {
+      setReturnModalVisible(false);
+      setReturnLoading(false);
+      setReturningOrderId(null);
     }
   };
 
@@ -300,7 +317,7 @@ const OrderManagementPage = () => {
           record.is_late ? (
             <Tag color="red">
               Telat {record.late_days} hari
-              <br />Denda: Rp {record.late_fee?.toLocaleString()}
+              <br />Sisa Denda: Rp {Math.max(0, (record.late_fee || 0) - 300000).toLocaleString()}
             </Tag>
           ) : (
             <Tag color="green">Tepat Waktu</Tag>
@@ -308,6 +325,25 @@ const OrderManagementPage = () => {
         ) : (
           <Tag color="default">-</Tag>
         )
+      )
+    },
+    {
+      title: 'Deposit Dikembalikan',
+      dataIndex: 'deposit_returned',
+      key: 'deposit_returned',
+      render: (deposit_returned) => (
+        <Text style={{ color: '#722ed1' }}>
+          Rp {deposit_returned?.toLocaleString()}
+        </Text>
+      )
+    },
+    {
+      title: 'Kerusakan',
+      key: 'damage_level',
+      render: (_, record) => (
+        <Text style={{ color: '#faad14' }}>
+          {record.damage_level === 'none' ? 'Tidak Ada' : record.damage_level}
+        </Text>
       )
     },
     {
@@ -746,8 +782,22 @@ const OrderManagementPage = () => {
                 <Descriptions.Item label="Jumlah Hari">
                   {selectedOrder.late_days}
                 </Descriptions.Item>
-                <Descriptions.Item label="Denda">
-                  Rp {selectedOrder.late_fee?.toLocaleString()}
+                <Descriptions.Item label="Sisa Denda">
+                  Rp {Math.max(0, (selectedOrder.late_fee || 0) - 300000).toLocaleString()}
+                </Descriptions.Item>
+              </Descriptions>
+
+              <Divider />
+
+              <Descriptions title="Deposit" bordered column={3}>
+                <Descriptions.Item label="Deposit Awal">
+                  Rp {selectedOrder.deposit?.toLocaleString()}
+                </Descriptions.Item>
+                <Descriptions.Item label="Deposit Dikembalikan">
+                  Rp {selectedOrder.deposit_returned?.toLocaleString()}
+                </Descriptions.Item>
+                <Descriptions.Item label="Kerusakan">
+                  {selectedOrder.damage_level === 'none' ? 'Tidak Ada' : selectedOrder.damage_level}
                 </Descriptions.Item>
               </Descriptions>
 
@@ -769,6 +819,31 @@ const OrderManagementPage = () => {
             alt="Bukti Pembayaran"
             style={{ width: "100%", maxWidth: 500, borderRadius: 8, border: "1px solid #eee" }}
           />
+        </Modal>
+
+        {/* Tambahkan modal konfirmasi pengembalian */}
+        <Modal
+          open={returnModalVisible}
+          onCancel={() => setReturnModalVisible(false)}
+          onOk={confirmReturnOrder}
+          confirmLoading={returnLoading}
+          title="Konfirmasi Pengembalian Kostum"
+          okText="Kembalikan"
+          cancelText="Batal"
+          centered
+        >
+          <div>
+            <p>Pilih tingkat kerusakan kostum:</p>
+            <Select value={damageLevel} onChange={setDamageLevel} style={{ width: 200 }}>
+              <Option value="none">Tidak Ada</Option>
+              <Option value="minim">Minim (Potong 10%)</Option>
+              <Option value="sedang">Sedang (Potong 50%)</Option>
+              <Option value="berat">Berat (Potong 100%)</Option>
+            </Select>
+            <div style={{ marginTop: 16 }}>
+              <b>Catatan:</b> Deposit akan dipotong jika ada keterlambatan atau kerusakan.
+            </div>
+          </div>
         </Modal>
       </div>
     </div>
