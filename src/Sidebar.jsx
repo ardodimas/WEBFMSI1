@@ -16,6 +16,7 @@ const Sidebar = () => {
   // Menu untuk Admin
   const adminMenu = [
     { label: 'Katalog Admin', path: '/katalog-admin' },
+    { label: 'Manajemen Pesanan', path: '/admin/orders' },
   ];
 
   // Menu settings untuk semua user
