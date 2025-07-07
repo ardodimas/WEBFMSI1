@@ -1,0 +1,58 @@
+.pesanan-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  margin-bottom: 24px;
+}
+
+.pesanan-table th {
+  background: #a32033;
+  color: #fff;
+  font-weight: 600;
+  padding: 10px 8px;
+  text-align: left;
+}
+
+.pesanan-table td {
+  padding: 10px 8px;
+  border-bottom: 1px solid #eee;
+}
+
+.pesanan-table tr:last-child td {
+  border-bottom: none;
+}
+
+.pesanan-detail-table {
+  width: 100%;
+  margin-top: 8px;
+  background: #f9f9f9;
+  border-radius: 6px;
+}
+
+.pesanan-detail-table th {
+  background: #e2e2e2;
+  color: #333;
+  font-weight: 500;
+  padding: 6px 8px;
+}
+
+.pesanan-detail-table td {
+  padding: 6px 8px;
+}
+
+.pesanan-status {
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 0.95em;
+  font-weight: 500;
+  display: inline-block;
+}
+
+.pesanan-status.unpaid { background: #ffeaea; color: #a32033; }
+.pesanan-status.paid { background: #eaffea; color: #1a7f37; }
+.pesanan-status.pending { background: #fffbe6; color: #bfa100; }
+.pesanan-status.completed { background: #e6f7ff; color: #1890ff; } 

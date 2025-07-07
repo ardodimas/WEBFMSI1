@@ -1,0 +1,100 @@
+.login-layout {
+  min-height: 100vh;
+}
+
+.login-row {
+  width: 100%;
+  height: 100%;
+  padding-right: 30px;
+}
+
+.login-content {
+  height: 100%;
+  background: url("/images/login-dragon.png") center center / cover no-repeat;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-form-wrapper {
+  background-color: rgba(255, 230, 230, 0.8); /* transparansi 80% */
+  backdrop-filter: blur(5px);
+  height: 100%;
+  padding: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 16px;
+}
+
+.login-form-container h2 {
+  color: #a32033;
+  font-weight: bold;
+}
+
+.login-form-container {
+  width: 100%;
+  max-width: 400px;
+}
+
+.login-form {
+  margin-top: 32px;
+}
+
+.login-button {
+  background-color: #a32033;
+  border: none;
+  width: 100%;
+  height: 40px;
+  font-weight: bold;
+}
+
+.login-button:hover {
+  background-color: #871a2a !important;
+}
+
+.login-links {
+  margin-bottom: 16px;
+  font-size: 13px;
+}
+
+.login-divider {
+  text-align: center;
+  margin: 20px 0;
+  color: #999;
+  position: relative;
+}
+
+.login-divider span {
+  padding: 0 12px;
+  position: relative;
+  z-index: 1;
+}
+
+.login-divider::before {
+  content: "";
+  height: 1px;
+  background: #ccc;
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  z-index: 0;
+}
+
+.social-icons {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+}
+
+.social-icons img {
+  width: 36px;
+  height: 36px;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.social-icons img:hover {
+  transform: scale(1.1);
+}

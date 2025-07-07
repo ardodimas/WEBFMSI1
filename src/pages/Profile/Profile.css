@@ -1,0 +1,222 @@
+.profile-page {
+  position: relative;
+  min-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding-top: 32px;
+}
+.logout-btn {
+  position: absolute;
+  right: 48px;
+  top: 32px;
+  background: #a7374a;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 28px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  letter-spacing: 1px;
+  transition: background 0.2s;
+}
+.logout-btn:hover {
+  background: #7a2535;
+}
+.profile-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  margin-top: 16px;
+}
+.profile-avatar {
+  margin-bottom: 8px;
+  box-shadow: 0 4px 12px rgba(167, 55, 74, 0.3);
+  transition: transform 0.2s ease;
+}
+.profile-avatar:hover {
+  transform: scale(1.05);
+}
+.profile-name {
+  font-size: 1.2rem;
+  font-weight: 500;
+  margin-bottom: 18px;
+  margin-top: 4px;
+  letter-spacing: 1px;
+}
+.profile-label {
+  font-size: 1rem;
+  margin: 10px 0 2px 0;
+  color: #222;
+  font-weight: 400;
+  text-align: center;
+}
+.profile-box {
+  border: 2px solid #a7374a;
+  border-radius: 12px;
+  padding: 8px 18px;
+  min-width: 340px;
+  font-size: 1.05rem;
+  margin-bottom: 6px;
+  background: #fff;
+  color: #222;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.profile-box a {
+  color: #a7374a;
+  text-decoration: underline;
+}
+.profile-box-alamat {
+  min-height: 56px;
+  flex-direction: row;
+  justify-content: space-between;
+  padding-right: 10px;
+  text-align: left;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+}
+.edit-addr {
+  display: flex;
+  align-items: center;
+  margin-left: 8px;
+  cursor: pointer;
+  transition: color 0.2s;
+  flex-shrink: 0;
+}
+.edit-addr:hover svg path {
+  fill: #7a2535;
+}
+.profile-box-phone {
+  position: relative;
+  padding-right: 40px;
+}
+.phone-edit-icon {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  background: white;
+  padding-left: 4px;
+}
+.phone-edit-icon:hover svg path {
+  fill: #7a2535;
+}
+
+/* Modal styles */
+.ant-modal-header {
+  background: #a7374a;
+  color: white;
+}
+
+.ant-modal-title {
+  color: white !important;
+}
+
+.ant-modal-close {
+  color: white !important;
+}
+
+.ant-modal-close:hover {
+  color: #f0f0f0 !important;
+}
+
+.ant-form-item-label > label {
+  font-weight: 500;
+  color: #333;
+}
+
+.ant-input-textarea {
+  border-radius: 8px;
+}
+
+.ant-input-textarea:focus,
+.ant-input-textarea:hover {
+  border-color: #a7374a;
+  box-shadow: 0 0 0 2px rgba(167, 55, 74, 0.2);
+}
+
+.profile-user-info-box {
+  position: absolute;
+  top: 32px;
+  right: 48px;
+  z-index: 10;
+  background: rgba(167, 55, 74, 0.7);
+  border-radius: 10px;
+  border: 1.2px solid #fff;
+  padding: 12px 12px 10px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 120px;
+  max-width: 180px;
+  box-sizing: border-box;
+}
+.profile-user-role {
+  color: #fff;
+  font-size: 0.95rem;
+  font-weight: 400;
+  margin-bottom: 10px;
+}
+.profile-logout-button {
+  width: 100%;
+  background: #d32f2f;
+  color: #fff;
+  border: 1.5px solid #fff;
+  border-radius: 6px;
+  padding: 6px 0;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  margin-top: 0;
+}
+.profile-logout-button:hover {
+  background: #b71c1c;
+  color: #fff;
+}
+
+@media (max-width: 600px) {
+  .profile-box {
+    min-width: 180px;
+    font-size: 0.95rem;
+  }
+  .logout-btn {
+    right: 16px;
+    top: 16px;
+    padding: 7px 16px;
+    font-size: 0.95rem;
+  }
+  .profile-avatar {
+    width: 90px !important;
+    height: 90px !important;
+    font-size: 40px !important;
+  }
+  .profile-box-alamat {
+    min-width: 160px;
+    font-size: 0.9rem;
+  }
+  .profile-user-info-box {
+    top: 12px;
+    right: 8px;
+    min-width: 90px;
+    max-width: 100%;
+    padding: 8px 4px 6px 4px;
+  }
+  .profile-user-role {
+    font-size: 0.85rem;
+    margin-bottom: 7px;
+  }
+  .profile-logout-button {
+    font-size: 0.85rem;
+    padding: 5px 0;
+  }
+} 

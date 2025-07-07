@@ -20,6 +20,18 @@
   padding-left: 28px;
   letter-spacing: 1px;
 }
+
+.sidebar-admin-badge {
+  background: #ff6b35;
+  color: white;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  text-align: center;
+  margin: 0 28px 20px 28px;
+  letter-spacing: 1px;
+}
 .sidebar-menu {
   display: flex;
   flex-direction: column;
@@ -61,6 +73,34 @@
   margin: 32px 0 10px 28px;
   font-size: 1rem;
   color: #fff;
+}
+.sidebar-user-info {
+  margin: 20px 0 10px 28px;
+  padding: 15px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+.user-role {
+  font-size: 0.9rem;
+  color: #fff;
+  margin-bottom: 10px;
+  font-weight: 500;
+}
+.logout-button {
+  background: #d32f2f !important;
+  color: #fff !important;
+  border: 1px solid #fff !important;
+  padding: 8px 16px !important;
+  border-radius: 6px !important;
+  font-size: 0.9rem !important;
+  cursor: pointer !important;
+  transition: background 0.2s !important;
+  width: 100% !important;
+  text-align: center !important;
+}
+.logout-button:hover {
+  background: #b71c1c !important;
 }
 .sidebar-admin {
   margin-top: auto;
