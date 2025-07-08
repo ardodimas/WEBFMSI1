@@ -242,9 +242,9 @@ const OrderManagementPage = () => {
       key: 'user_name',
       render: (name, record) => (
         <Space direction="vertical" size={0}>
-          <Text strong>{name || 'N/A'}</Text>
+          <Text strong>{name || 'Tidak Ada'}</Text>
           <Text type="secondary" style={{ fontSize: 12 }}>
-            {record.user_email || 'N/A'}
+            {record.user_email || 'Tidak Ada'}
           </Text>
         </Space>
       )
@@ -279,7 +279,13 @@ const OrderManagementPage = () => {
       key: 'status',
       render: (status) => (
         <Tag color={orderStatusColor[status] || "default"}>
-          {status?.toUpperCase()}
+          {status === 'pending' ? 'Menunggu Konfirmasi' :
+           status === 'confirmed' ? 'Terkonfirmasi' :
+           status === 'processing' ? 'Diproses' :
+           status === 'completed' ? 'Selesai' :
+           status === 'cancelled' ? 'Dibatalkan' :
+           status === 'returned' ? 'Dikembalikan' :
+           status?.toUpperCase()}
         </Tag>
       )
     },
@@ -352,7 +358,7 @@ const OrderManagementPage = () => {
       render: (_, record) => (
         <Space>
           <Button 
-            type="primary" 
+            style={{ backgroundColor: '#a7374a', borderColor: '#a7374a', color: '#fff' }}
             icon={<EyeOutlined />} 
             size="small"
             onClick={() => showOrderDetail(record)}
@@ -363,27 +369,27 @@ const OrderManagementPage = () => {
             <>
               <Select
                 size="small"
-                style={{ width: 120 }}
+                style={{ minWidth: 150, width: 'auto' }}
                 placeholder="Status"
                 value={record.status}
                 onChange={(value) => handleStatusUpdate(record.id, value)}
               >
-                <Option value="pending">Pending</Option>
-                <Option value="confirmed" disabled={record.payment_status !== 'paid'}>Confirmed</Option>
-                <Option value="processing" disabled={record.payment_status !== 'paid'}>Processing</Option>
-                <Option value="completed" disabled={record.payment_status !== 'paid'}>Completed</Option>
-                <Option value="cancelled">Cancelled</Option>
+                <Option value="pending">Menunggu Konfirmasi</Option>
+                <Option value="confirmed" disabled={record.payment_status !== 'paid'}>Terkonfirmasi</Option>
+                <Option value="processing" disabled={record.payment_status !== 'paid'}>Diproses</Option>
+                <Option value="completed" disabled={record.payment_status !== 'paid'}>Selesai</Option>
+                <Option value="cancelled">Dibatalkan</Option>
               </Select>
               <Select
                 size="small"
-                style={{ width: 120 }}
+                style={{ minWidth: 150, width: 'auto' }}
                 placeholder="Pembayaran"
                 value={record.payment_status}
                 onChange={(value) => handlePaymentStatusUpdate(record.id, value)}
               >
-                <Option value="unpaid">Unpaid</Option>
-                <Option value="paid">Paid</Option>
-                <Option value="pending">Pending</Option>
+                <Option value="unpaid">Belum Dibayar</Option>
+                <Option value="paid">Sudah Dibayar</Option>
+                <Option value="pending">Menunggu Verifikasi</Option>
               </Select>
               {record.status !== 'returned' && record.status === 'completed' && (
                 <Button
@@ -421,8 +427,7 @@ const OrderManagementPage = () => {
     }}>
       <div style={{ margin: '0 auto', width: '100%', maxWidth: '100%', padding: '0 16px' }}>
         <div style={{ marginBottom: 24 }}>
-          <Title level={2}>Manajemen Pesanan</Title>
-          <Text type="secondary">Kelola semua pesanan pelanggan</Text>
+          <Title level={2} style={{ color: '#a7374a' }}>Manajemen Pesanan</Title>
         </div>
 
         {/* Statistics Cards */}
@@ -507,11 +512,12 @@ const OrderManagementPage = () => {
                 onChange={(value) => setFilters({ ...filters, status: value })}
                 allowClear
               >
-                <Option value="pending">Pending</Option>
-                <Option value="confirmed">Confirmed</Option>
-                <Option value="processing">Processing</Option>
-                <Option value="completed">Completed</Option>
-                <Option value="cancelled">Cancelled</Option>
+                <Option value="pending">Menunggu Konfirmasi</Option>
+                <Option value="confirmed">Terkonfirmasi</Option>
+                <Option value="processing">Diproses</Option>
+                <Option value="completed">Selesai</Option>
+                <Option value="cancelled">Dibatalkan</Option>
+                <Option value="returned">Dikembalikan</Option>
               </Select>
             </Col>
             <Col xs={24} sm={12} md={4}>
@@ -522,9 +528,9 @@ const OrderManagementPage = () => {
                 onChange={(value) => setFilters({ ...filters, paymentStatus: value })}
                 allowClear
               >
-                <Option value="unpaid">Unpaid</Option>
-                <Option value="paid">Paid</Option>
-                <Option value="pending">Pending</Option>
+                <Option value="unpaid">Belum Dibayar</Option>
+                <Option value="paid">Sudah Dibayar</Option>
+                <Option value="pending">Menunggu Verifikasi</Option>
               </Select>
             </Col>
             <Col xs={24} sm={12} md={6}>
@@ -537,7 +543,7 @@ const OrderManagementPage = () => {
             </Col>
             <Col xs={24} sm={12} md={4}>
               <Button 
-                type="primary" 
+                style={{ backgroundColor: '#a7374a', borderColor: '#a7374a', color: '#fff' }}
                 icon={<FilterOutlined />}
                 onClick={() => setFilters({ status: "", paymentStatus: "", search: "", dateRange: null })}
               >
@@ -585,12 +591,21 @@ const OrderManagementPage = () => {
                 </Descriptions.Item>
                 <Descriptions.Item label="Status Pesanan">
                   <Tag color={orderStatusColor[selectedOrder.status]}>
-                    {selectedOrder.status?.toUpperCase()}
+                    {selectedOrder.status === 'pending' ? 'Menunggu Konfirmasi' :
+                     selectedOrder.status === 'confirmed' ? 'Terkonfirmasi' :
+                     selectedOrder.status === 'processing' ? 'Diproses' :
+                     selectedOrder.status === 'completed' ? 'Selesai' :
+                     selectedOrder.status === 'cancelled' ? 'Dibatalkan' :
+                     selectedOrder.status === 'returned' ? 'Dikembalikan' :
+                     selectedOrder.status?.toUpperCase()}
                   </Tag>
                 </Descriptions.Item>
                 <Descriptions.Item label="Status Pembayaran">
                   <Tag color={statusColor[selectedOrder.payment_status]}>
-                    {selectedOrder.payment_status?.toUpperCase()}
+                    {selectedOrder.payment_status === 'pending' ? 'MENUNGGU VERIFIKASI' :
+                     selectedOrder.payment_status === 'paid' ? 'SUDAH DIBAYAR' :
+                     selectedOrder.payment_status === 'unpaid' ? 'BELUM DIBAYAR' :
+                     selectedOrder.payment_status?.toUpperCase()}
                   </Tag>
                 </Descriptions.Item>
                 <Descriptions.Item label="Total Harga" span={3}>
@@ -604,13 +619,13 @@ const OrderManagementPage = () => {
 
               <Descriptions title="Informasi Pelanggan" bordered column={3}>
                 <Descriptions.Item label="Nama">
-                  {selectedOrder.user_name || 'N/A'}
+                  {selectedOrder.user_name || 'Tidak Ada'}
                 </Descriptions.Item>
                 <Descriptions.Item label="Email">
-                  {selectedOrder.user_email || 'N/A'}
+                  {selectedOrder.user_email || 'Tidak Ada'}
                 </Descriptions.Item>
                 <Descriptions.Item label="Alamat" span={3}>
-                  {selectedOrder.address || 'N/A'}
+                  {selectedOrder.address || 'Tidak Ada'}
                 </Descriptions.Item>
               </Descriptions>
 
@@ -624,7 +639,7 @@ const OrderManagementPage = () => {
                   {selectedOrder.return_date}
                 </Descriptions.Item>
                 <Descriptions.Item label="Metode Pembayaran">
-                  {selectedOrder.payment_method?.toUpperCase() || 'N/A'}
+                  {selectedOrder.payment_method?.toUpperCase() || 'Tidak Ada'}
                 </Descriptions.Item>
               </Descriptions>
 
@@ -635,6 +650,7 @@ const OrderManagementPage = () => {
                 <div style={{ marginBottom: 24 }}>
                   <Title level={5}>Bukti Pembayaran</Title>
                   <Button
+                    style={{ backgroundColor: '#a7374a', borderColor: '#a7374a', color: '#fff' }}
                     onClick={() => {
                       // Coba static folder dulu, jika gagal pakai route khusus, jika gagal pakai base64
                       const staticUrl = `${import.meta.env.VITE_REACT_APP_API_URL}/${selectedOrder.payment.proof_image}`;
@@ -745,13 +761,13 @@ const OrderManagementPage = () => {
                       handleStatusUpdate(selectedOrder.id, value);
                       setIsModalVisible(false);
                     }}
-                    style={{ width: 150 }}
+                    style={{ minWidth: 150, width: 'auto' }}
                   >
-                    <Option value="pending">Pending</Option>
-                    <Option value="confirmed" disabled={selectedOrder.payment_status !== 'paid'}>Confirmed</Option>
-                    <Option value="processing" disabled={selectedOrder.payment_status !== 'paid'}>Processing</Option>
-                    <Option value="completed" disabled={selectedOrder.payment_status !== 'paid'}>Completed</Option>
-                    <Option value="cancelled">Cancelled</Option>
+                    <Option value="pending">Menunggu Konfirmasi</Option>
+                    <Option value="confirmed" disabled={selectedOrder.payment_status !== 'paid'}>Terkonfirmasi</Option>
+                    <Option value="processing" disabled={selectedOrder.payment_status !== 'paid'}>Diproses</Option>
+                    <Option value="completed" disabled={selectedOrder.payment_status !== 'paid'}>Selesai</Option>
+                    <Option value="cancelled">Dibatalkan</Option>
                   </Select>
                   <Select
                     placeholder="Update Status Pembayaran"
@@ -760,11 +776,11 @@ const OrderManagementPage = () => {
                       handlePaymentStatusUpdate(selectedOrder.id, value);
                       setIsModalVisible(false);
                     }}
-                    style={{ width: 150 }}
+                    style={{ minWidth: 150, width: 'auto' }}
                   >
-                    <Option value="unpaid">Unpaid</Option>
-                    <Option value="paid">Paid</Option>
-                    <Option value="pending">Pending</Option>
+                    <Option value="unpaid">Belum Dibayar</Option>
+                    <Option value="paid">Sudah Dibayar</Option>
+                    <Option value="pending">Menunggu Verifikasi</Option>
                   </Select>
                 </Space>
               </div>

@@ -99,7 +99,7 @@ const TransferPaymentPage = () => {
 
   return (
     <div style={{ padding: "20px" }}>
-      <Card title="Informasi Transfer" style={{ maxWidth: 800, margin: "0 auto" }}>
+      <Card title="Informasi Transfer" style={{ maxWidth: 600, width: '100%', margin: "0 auto" }}>
         <Title level={4}>Rekening Transfer</Title>
         <Text>Silakan transfer ke salah satu rekening berikut:</Text>
         
@@ -136,24 +136,29 @@ const TransferPaymentPage = () => {
             </Card>
 
             <Divider />
-            <Title level={4}>Upload Bukti Pembayaran</Title>
-            <Upload
-              beforeUpload={() => false}
-              fileList={fileList}
-              onChange={({ fileList }) => setFileList(fileList)}
-              accept="image/*"
-            >
-              <Button icon={<UploadOutlined />}>Pilih File</Button>
-            </Upload>
-
-            <Button 
-              type="primary" 
-              style={{ marginTop: 16 }} 
-              onClick={handleUpload}
-              disabled={fileList.length === 0}
-            >
-              Kirim Bukti Pembayaran
-            </Button>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
+              <Title level={4} style={{ marginBottom: 8 }}>Upload Bukti Pembayaran</Title>
+              <Upload
+                beforeUpload={() => false}
+                fileList={fileList}
+                onChange={({ fileList }) => setFileList(fileList)}
+                accept="image/*"
+                maxCount={1}
+              >
+                <Button icon={<UploadOutlined />}>Pilih File</Button>
+              </Upload>
+              <Button
+                type="primary"
+                style={{ marginTop: 12, marginBottom: 6, width: '100%' }}
+                onClick={handleUpload}
+                disabled={fileList.length === 0}
+              >
+                Kirim Bukti Pembayaran
+              </Button>
+              <Button type="default" onClick={() => navigate('/pesanan')} style={{ width: '100%' }}>
+                Kembali ke Pesanan
+              </Button>
+            </div>
           </>
         )}
 
