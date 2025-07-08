@@ -58,7 +58,7 @@ const AuthProvider = ({ children }) => {
         if (resp.role === 'admin') {
           navigate("/katalog-admin", { replace: true });
         } else {
-          navigate("/costumes", { replace: true });
+          navigate("/katalog", { replace: true });
         }
       } else {
         setIsLoggedIn(false);
