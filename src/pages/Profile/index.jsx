@@ -1,4 +1,3 @@
-import { useNavigate } from "react-router-dom";
 import { useContext, useState, useEffect } from "react";
 import { Modal, Button, Spin, Form, Input, message, Avatar } from "antd";
 import { UserOutlined } from "@ant-design/icons";
@@ -9,17 +8,13 @@ import './Profile.css';
 import React from 'react';
 
 export default function Profile() {
-  const navigate = useNavigate();
-  const { userProfile, logout, isLoadingScreen } = useContext(AuthContext);
+  const { userProfile, isLoadingScreen } = useContext(AuthContext);
   const [address, setAddress] = useState('');
   const [isEditAddressModalOpen, setIsEditAddressModalOpen] = useState(false);
   const [editAddressForm] = Form.useForm();
   const [phone, setPhone] = useState('');
   const [isEditPhoneModalOpen, setIsEditPhoneModalOpen] = useState(false);
   const [editPhoneForm] = Form.useForm();
-  const [open, setOpen] = useState(false);
-  const [confirmLoading, setConfirmLoading] = useState(false);
-  const [modalText, setModalText] = useState('Apakah kamu yakin ingin logout?');
   
   // Load alamat dari localStorage berdasarkan user ID
   useEffect(() => {
@@ -99,39 +94,6 @@ export default function Profile() {
     setIsEditPhoneModalOpen(false);
     editPhoneForm.resetFields();
   };
-  
-  const handleLogout = () => {
-    setOpen(true);
-  };
-  
-  const handleOk = async () => {
-    setModalText('Sedang logout...');
-    setConfirmLoading(true);
-    try {
-      await logout(); // Gunakan logout dari AuthContext
-    setTimeout(() => {
-        setOpen(false);
-        setConfirmLoading(false);
-      }, 2000);
-    } catch (error) {
-      console.error('Logout error:', error);
-      setOpen(false);
-      setConfirmLoading(false);
-    }
-  };
-  
-  const handleCancel = () => {
-    setOpen(false);
-  };
-
-  // Handle logout (pindahan dari Sidebar)
-  const handleLogoutBox = async () => {
-    try {
-      await logout();
-    } catch (error) {
-      console.error("Logout error in profile:", error);
-    }
-  };
 
   // Tampilkan loading jika masih memuat data
   if (isLoadingScreen) {
@@ -146,19 +108,6 @@ export default function Profile() {
 
   return (
     <div className="profile-page">
-      <button className="logout-btn" onClick={handleLogout} style={{display:'none'}}>LOG OUT</button>
-      
-      {/* Modal Logout */}
-      <Modal
-        title= "Konfirmasi Logout"
-        okText= "Ya"
-        cancelText= "Batal"
-        open={open}
-        onOk={handleOk}
-        confirmLoading={confirmLoading}
-        onCancel={handleCancel}
-      ><p>{modalText}</p></Modal>
-
       {/* Modal Edit Alamat */}
       <Modal
         title="Edit Alamat"
@@ -235,17 +184,6 @@ export default function Profile() {
           }}
         />
         <div className="profile-name">{userProfile?.name || 'User'}</div>
-        {/* Box user info dan logout */}
-        <div className="profile-user-info-box">
-          <div className="profile-user-role">{userProfile?.role === 'admin' ? 'Admin' : 'User'}</div>
-          <button
-            onClick={handleLogoutBox}
-            className="profile-logout-button"
-            type="button"
-          >
-            Logout
-          </button>
-        </div>
         <div className="profile-label">Email</div>
         <div className="profile-box">
           <a href={`mailto:${userProfile?.email || ''}`}>

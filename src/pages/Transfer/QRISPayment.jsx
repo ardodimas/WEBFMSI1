@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Typography, Button, Upload, message } from 'antd';
+import { Card, Typography, Button, Upload, message, Divider, notification } from 'antd';
 import { useNavigate, useParams } from 'react-router-dom';
 import { UploadOutlined } from '@ant-design/icons';
 import { sendDataWithFile, getDataPrivate } from '../../utils/api';
@@ -13,6 +13,7 @@ const QRISPaymentPage = () => {
   const [fileList, setFileList] = useState([]);
   const [uploading, setUploading] = useState(false);
   const [order, setOrder] = useState(null);
+  const [api, contextHolder] = notification.useNotification();
 
   useEffect(() => {
     if (id) {
@@ -23,6 +24,13 @@ const QRISPaymentPage = () => {
         });
     }
   }, [id]);
+
+  const openNotificationWithIcon = (type, title, description) => {
+    api[type]({
+      message: title,
+      description: description,
+    });
+  };
 
   const handleUpload = async () => {
     if (fileList.length === 0) {
@@ -36,40 +44,50 @@ const QRISPaymentPage = () => {
     formData.append('proof_image', fileList[0]?.originFileObj);
     try {
       await sendDataWithFile('/api/payments', formData);
-      message.success('Bukti pembayaran berhasil diunggah');
       setTimeout(() => navigate('/pesanan'), 1500);
+      openNotificationWithIcon("success", "Pembayaran QRIS Berhasil!", "Bukti pembayaran berhasil diunggah.");
     } catch (error) {
-      message.error('Gagal mengunggah bukti pembayaran');
+      openNotificationWithIcon("error", "Pembayaran QRIS Gagal!", "Gagal mengunggah bukti pembayaran.");
     } finally {
       setUploading(false);
     }
   };
 
   return (
-    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '80vh' }}>
-      <Card style={{ maxWidth: 400, width: '100%', textAlign: 'center', boxShadow: '0 2px 8px rgba(0,0,0,0.07)' }}>
-        <Title level={3} style={{ marginBottom: 16 }}>Pembayaran QRIS</Title>
-        <img
-          src={qrisImage}
-          alt="QRIS QR Code"
-          style={{ width: '90%', maxWidth: 320, marginBottom: 16, borderRadius: 8, border: '1px solid #eee' }}
-        />
-        {order && (
-          <div style={{ marginBottom: 16 }}>
-            <Text strong>Total Pembayaran: </Text>
-            <Text type="danger" strong>
-              Rp {order.total_price?.toLocaleString('id-ID')}
+    <>
+      {contextHolder}
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '40vh', padding: '24px 0' }}>
+        <Card style={{ maxWidth: 600, width: '100%', margin: '0 auto', textAlign: 'center', boxShadow: '0 2px 8px rgba(0,0,0,0.07)', padding: '16px 0' }}>
+          <Title level={3} style={{ marginBottom: 8 }}>Pembayaran QRIS</Title>
+          <Divider style={{ margin: '8px 0' }} />
+          <img
+            src={qrisImage}
+            alt="QRIS QR Code"
+            style={{ width: '80%', maxWidth: 220, marginBottom: 8, borderRadius: 8, border: '1px solid #eee' }}
+          />
+          {order && (
+            <>
+              <Divider style={{ margin: '8px 0' }} />
+              <Title level={4} style={{ marginBottom: 8 }}>Detail Pembayaran</Title>
+              <Card style={{ background: "#f5f5f5", marginBottom: 8, padding: 8 }}>
+                <Text strong>Order ID: </Text>
+                <Text>{order.id}</Text><br />
+                <Text strong>Total Pembayaran: </Text>
+                <Text type="danger" strong>
+                  Rp {order.total_price?.toLocaleString("id-ID")}
+                </Text>
+              </Card>
+            </>
+          )}
+          <div style={{ marginBottom: 8 }}>
+            <Text strong>Scan QR di atas menggunakan aplikasi pembayaran yang mendukung QRIS.</Text>
+            <br />
+            <Text type="secondary" style={{ fontSize: 13 }}>
+              Setelah pembayaran, silakan upload bukti pembayaran di bawah ini.
             </Text>
           </div>
-        )}
-        <div style={{ marginBottom: 16 }}>
-          <Text strong>Scan QR di atas menggunakan aplikasi pembayaran yang mendukung QRIS.</Text>
-          <br />
-          <Text type="secondary" style={{ fontSize: 13 }}>
-            Setelah pembayaran, silakan upload bukti pembayaran di bawah ini.
-          </Text>
-        </div>
-        <div style={{ marginBottom: 16 }}>
+          <Divider style={{ margin: '8px 0' }} />
+          <Title level={4} style={{ marginBottom: 8 }}>Upload Bukti Pembayaran</Title>
           <Upload
             beforeUpload={() => false}
             fileList={fileList}
@@ -77,23 +95,24 @@ const QRISPaymentPage = () => {
             accept="image/*"
             maxCount={1}
           >
-            <Button icon={<UploadOutlined />}>Pilih Bukti Pembayaran</Button>
+            <Button icon={<UploadOutlined />}>Pilih File</Button>
           </Upload>
-        </div>
-        <Button
-          type="primary"
-          onClick={handleUpload}
-          loading={uploading}
-          style={{ marginBottom: 16, width: '100%' }}
-        >
-          Kirim Bukti Pembayaran
-        </Button>
-        <Button type="default" onClick={() => navigate('/pesanan')} style={{ width: '100%' }}>
-          Kembali ke Pesanan
-        </Button>
-      </Card>
-    </div>
+          <Button
+            type="primary"
+            onClick={handleUpload}
+            loading={uploading}
+            style={{ marginTop: 12, marginBottom: 6, width: '100%' }}
+            disabled={fileList.length === 0}
+          >
+            Kirim Bukti Pembayaran
+          </Button>
+          <Button type="default" onClick={() => navigate('/pesanan')} style={{ width: '100%' }}>
+            Kembali ke Pesanan
+          </Button>
+        </Card>
+      </div>
+    </>
   );
 };
 
-export default QRISPaymentPage; 
+export default QRISPaymentPage;

@@ -36,6 +36,8 @@
   display: flex;
   align-items: center;
   gap: 24px;
+  overflow: visible;
+  flex-wrap: nowrap;
 }
 
 .menu-button {
@@ -95,9 +97,9 @@
     display: block;
   }
 
-  .navbar-right .ant-menu {
+  /* .navbar-right .ant-menu {
     display: none;
-  }
+  } */
 }
 
 /* Menu Styles */
@@ -157,3 +159,9 @@
   background: #fff1f0;
   color: #ff4d4f;
 } 
+
+.navbar-right .ant-menu {
+  display: flex !important;
+  gap: 16px;
+  align-items: center;
+}

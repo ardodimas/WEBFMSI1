@@ -1,11 +1,12 @@
-.katalog-container {
-  padding: 24px;
-  background-color: #f5f5f5;
+.katalog-container .ant-list-item {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
 }
 
 .card-wrapper {
   width: 100%;
-  max-width: 100%;
   height: 100%;
 }
 
@@ -13,61 +14,41 @@
   height: 100%;
   display: flex;
   flex-direction: column;
-  border-radius: 12px;
-  overflow: hidden;
-  transition: transform 0.3s ease;
-}
-
-.kostum-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+  justify-content: space-between;
+  min-height: 450px;
 }
 
 .kostum-thumbnail {
-  height: 180px;
-  object-fit: cover;
   width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-bottom: 1px solid #f0f0f0;
 }
 
 .kostum-content {
   flex-grow: 1;
-  padding: 12px;
-  display: flex;
-  flex-direction: column;
+  padding: 16px;
 }
 
 .kostum-title {
-  font-weight: 600;
+  font-weight: bold;
   font-size: 16px;
-  margin-bottom: 6px;
-  white-space: nowrap;
+  margin-bottom: 8px;
   overflow: hidden;
+  white-space: nowrap;
   text-overflow: ellipsis;
 }
 
 .kostum-description {
   font-size: 13px;
   color: #555;
-  margin-bottom: 8px;
+  margin-bottom: 12px;
+  height: 40px;
   overflow: hidden;
-  display: -webkit-box;
-  -webkit-line-clamp: 2; /* Batasi 2 baris */
-  -webkit-box-orient: vertical;
+  text-overflow: ellipsis;
 }
 
 .kostum-footer {
-  margin-top: auto;
   font-size: 13px;
-}
-
-/* Fix layout List.Item agar tidak stretch */
-.ant-list-item {
-  padding: 0 !important;
-  display: flex !important;
-  justify-content: center;
-}
-
-.ant-list-item > div {
-  width: 100%;
-  max-width: 100%;
+  line-height: 1.4;
 }

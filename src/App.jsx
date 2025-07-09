@@ -18,11 +18,11 @@ import Footer from './components/Footer';
 
 const pageTitles = {
   '/dashboard': 'Dashboard',
-  '/costumes': 'Katalog',
+  '/katalog': 'Katalog',
   '/pesanan': 'Pesanan',
   '/transfer': 'Transfer',
   '/profile': 'Profile',
-  '/admin/orders': 'Manajemen Pesanan',
+  '/manajemen-pesanan': 'Manajemen Pesanan',
   '/katalog-admin': 'Katalog Admin'
 };
 
@@ -68,7 +68,7 @@ const ProtectedRoute = ({ children, allowedRoles = [] }) => {
     const message = userProfile?.role === 'admin'
       ? "Admin tidak dapat mengakses halaman ini. Silakan gunakan menu Katalog Admin."
       : "User tidak dapat mengakses halaman ini. Silakan gunakan menu Katalog, Pesanan, atau Transfer.";
-    const redirectPath = userProfile?.role === 'admin' ? '/katalog-admin' : '/costumes';
+    const redirectPath = userProfile?.role === 'admin' ? '/katalog-admin' : '/katalog';
 
     return <ErrorPage message={message} redirectPath={redirectPath} />;
   }
@@ -84,11 +84,11 @@ function MainContent() {
       <Routes>
         {/* Home Public */}
         <Route path="/home" element={<Home />} />
-        {/* User */}
-        <Route 
-          path="/costumes" 
-          element={<ProtectedRoute allowedRoles={['user']}><Katalog /></ProtectedRoute>} 
-        />
+
+        {/* Public Katalog */}
+        <Route path="/katalog" element={<Katalog />} />
+
+        {/* Checkout/Pesanan Protected */}
         <Route 
           path="/pesanan" 
           element={<ProtectedRoute allowedRoles={['user']}><Pesanan /></ProtectedRoute>} 
@@ -96,22 +96,6 @@ function MainContent() {
         <Route 
           path="/transfer" 
           element={<ProtectedRoute allowedRoles={['user']}><TransferPaymentPage /></ProtectedRoute>} 
-        />
-
-        {/* Admin */}
-        <Route 
-          path="/katalog-admin" 
-          element={<ProtectedRoute allowedRoles={['admin']}><KatalogAdmin /></ProtectedRoute>} 
-        />
-        <Route 
-          path="/admin/orders" 
-          element={<ProtectedRoute allowedRoles={['admin']}><OrderManagementPage /></ProtectedRoute>} 
-        />
-
-        {/* Umum */}
-        <Route 
-          path="/profile" 
-          element={<ProtectedRoute><Profile /></ProtectedRoute>} 
         />
         <Route 
           path="/pembayaran/transfer/:id" 
@@ -122,9 +106,25 @@ function MainContent() {
           element={<ProtectedRoute allowedRoles={['user']}><QRISPaymentPage /></ProtectedRoute>} 
         />
 
+        {/* Admin */}
+        <Route 
+          path="/katalog-admin" 
+          element={<ProtectedRoute allowedRoles={['admin']}><KatalogAdmin /></ProtectedRoute>} 
+        />
+        <Route 
+          path="/manajemen-pesanan" 
+          element={<ProtectedRoute allowedRoles={['admin']}><OrderManagementPage /></ProtectedRoute>} 
+        />
+
+        {/* Profile */}
+        <Route 
+          path="/profile" 
+          element={<ProtectedRoute><Profile /></ProtectedRoute>} 
+        />
+
         {/* Redirect */}
-        <Route path="/" element={<Navigate to="/costumes" replace />} />
-        <Route path="/dashboard" element={<Navigate to="/costumes" replace />} />
+        <Route path="/" element={<Navigate to="/katalog" replace />} />
+        <Route path="/dashboard" element={<Navigate to="/katalog" replace />} />
       </Routes>
     </div>
   );
@@ -138,7 +138,6 @@ function App() {
     return <div>Loading...</div>;
   }
 
-  // 🔧 Tambahkan "/register" ke daftar auth page
   const isAuthPage = ["/", "/login", "/register"].includes(location.pathname);
 
   return isAuthPage ? (

@@ -14,7 +14,8 @@ import {
   Space,
   ConfigProvider,
   DatePicker,
-  Select, // Tambahkan Select untuk dropdown metode pembayaran
+  Select,
+  Modal,
 } from "antd";
 import {
   SearchOutlined,
@@ -91,6 +92,24 @@ const Katalog = () => {
   const return_date = Form.useWatch("return_date", Pemesanan);
   const quantity = Form.useWatch("quantity", Pemesanan);
 
+  // Tidak boleh memilih tanggal sebelum hari ini
+  const disablePastDates = (current) => {
+    return current && current < dayjs().startOf("day");
+  };
+
+  // Tidak boleh memilih tanggal yang sama atau sebelum tanggal sewa
+  const disableReturnDates = (current) => {
+    return (
+      current &&
+      rental_date &&
+      current <= dayjs(rental_date).startOf("day")
+    );
+  };
+
+  useEffect(() => {
+    Pemesanan.setFieldValue("return_date", null);
+  }, [rental_date]);
+
   useEffect(() => {
     const pricePerDay = selectedCostume?.price_per_day || 0;
 
@@ -153,6 +172,20 @@ const Katalog = () => {
         message.error("Terjadi kesalahan, coba lagi.");
       });
   };
+
+  const [detailVisible, setDetailVisible] = useState(false);
+  const [selectedDetail, setSelectedDetail] = useState(null);
+
+  const showDetail = (costume) => {
+    setSelectedDetail(costume);
+    setDetailVisible(true);
+  };
+  
+  const closeDetail = () => {
+    setDetailVisible(false);
+    setSelectedDetail(null);
+  };
+
 
   const openNotificationWithIcon = (type, message, description) => {
     api[type]({
@@ -241,7 +274,7 @@ const Katalog = () => {
                           <Button
                             type="text"
                             icon={<InfoCircleOutlined />}
-                            onClick={() => message.info("Detail akan segera hadir")}
+                            onClick={() => showDetail(item)}
                             style={{ color: "#a7374a" }}
                           >
                             Detail
@@ -300,7 +333,11 @@ const Katalog = () => {
                 name="rental_date"
                 rules={[{ required: true, message: "Please select rental date" }]}
               >
-                <DatePicker format="YYYY-MM-DD" style={{ width: "100%" }} />
+                <DatePicker 
+                  format="YYYY-MM-DD"
+                  style={{ width: "100%" }}
+                  disabledDate={disablePastDates}
+                />
               </Form.Item>
               {/* Tanggal Kembali */}
               <Form.Item
@@ -308,7 +345,11 @@ const Katalog = () => {
                 name="return_date"
                 rules={[{ required: true, message: "Please select return date" }]}
               >
-                <DatePicker format="YYYY-MM-DD" style={{ width: "100%" }} />
+                <DatePicker 
+                  format="YYYY-MM-DD"
+                  style={{ width: "100%" }}
+                  disabledDate={disableReturnDates}
+                />
               </Form.Item>
               {/* Alamat */}
               <Form.Item
@@ -394,6 +435,40 @@ const Katalog = () => {
           )}
         </Drawer>
       </div>
+      <Modal
+        title="Detail Kostum"
+        visible={detailVisible}
+        onCancel={closeDetail}
+        footer={[
+          <Button key="close" onClick={closeDetail}>
+            Tutup
+          </Button>,
+        ]}
+      >
+        {selectedDetail && (
+          <div>
+            <img
+              src={selectedDetail.image_url}
+              alt={selectedDetail.name}
+              style={{ width: "100%", borderRadius: "8px", marginBottom: "16px" }}
+            />
+            <Title level={4}>{selectedDetail.name}</Title>
+            <Text>{selectedDetail.description}</Text>
+            <br /><br />
+            <Text strong>Harga per Hari: </Text>
+            <Text>Rp {selectedDetail.price_per_day.toLocaleString("id-ID")}</Text>
+            <br /><br />
+            <Text strong>Stok Ukuran: </Text>
+            <ul>
+              {selectedDetail.sizes?.map((s) => (
+                <li key={s.size?.id}>
+                  {s.size?.name}: {s.stock} tersedia
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </Modal>
     </ConfigProvider>
   );
 };

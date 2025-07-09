@@ -67,7 +67,7 @@ const Home = () => {
             <Text style={{ color: '#fff', fontSize: 18, display: 'block', marginBottom: 32 }}>
               Temukan kostum terbaik untuk segala acara. Pilihan lengkap, harga terjangkau, dan layanan cepat!
             </Text>
-            <Button type="primary" size="large" style={{ background: '#fff', color: '#a7374a', border: 'none', fontWeight: 700 }} href="/costumes">
+            <Button type="primary" size="large" style={{ background: '#fff', color: '#a7374a', border: 'none', fontWeight: 700 }} href="/katalog">
               Sewa Sekarang
             </Button>
           </Col>
