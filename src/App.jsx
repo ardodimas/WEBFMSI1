@@ -14,6 +14,7 @@ import RegisterPage from './pages/Register';
 import { useContext } from "react";
 import { AuthContext } from "./providers/AuthProvider";
 import Home from './pages/home';
+import Footer from './components/Footer';
 
 const pageTitles = {
   '/dashboard': 'Dashboard',
@@ -150,6 +151,7 @@ function App() {
     <div className="app-main">
       <Navbar />
       <MainContent />
+      <Footer />
     </div>
   );
 }

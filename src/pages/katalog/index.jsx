@@ -25,7 +25,7 @@ import {
 import { useEffect, useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../providers/AuthProvider";
-import { sendData } from "../../utils/api";
+import { sendData, getData } from "../../utils/api";
 import dayjs from "dayjs";
 
 const { Title, Text } = Typography;
@@ -39,6 +39,8 @@ const Katalog = () => {
   const [selectedCostume, setSelectedCostume] = useState(null);
   const [selectedSize, setSelectedSize] = useState("");
   const [placement] = useState("right");
+  const [categories, setCategories] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState('all');
 
   const { isLoggedIn, userProfile } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -163,6 +165,14 @@ const Katalog = () => {
     <ConfigProvider theme={{ token: { colorPrimary: "#a7374a" } }}>
       <div className="layout-content">
         {contextHolder}
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', margin: '32px 0 24px 0' }}>
+          <Typography.Title level={2} style={{ color: '#a7374a', fontWeight: 700, marginBottom: 8, textAlign: 'center' }}>
+            Katalog Sewa Kostum
+          </Typography.Title>
+          <Typography.Text style={{ fontSize: 18, color: '#555', textAlign: 'center', maxWidth: 600 }}>
+            Temukan berbagai pilihan kostum terbaik untuk segala acara. Proses sewa mudah, koleksi lengkap, dan harga terjangkau!
+          </Typography.Text>
+        </div>
         <Row gutter={[24, 0]}>
           <Col xs={23} className="mb-24">
             <Card bordered={false} className="circlebox h-full w-full">

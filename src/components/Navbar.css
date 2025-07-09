@@ -126,6 +126,14 @@
   margin: 0 auto;
   content: '';
 }
+.ant-menu .ant-menu-item-selected:hover {
+  border-bottom: 2px solid #a7374a !important;
+  background: none !important;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  content: '';  
+}
 
 /* Dropdown Menu */
 .ant-dropdown-menu {
