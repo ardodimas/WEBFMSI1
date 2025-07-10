@@ -12,8 +12,25 @@ const statusColor = {
   unpaid: "red",
   paid: "green",
   pending: "gold",
+  confirmed: "cyan",
+  processing: "purple",
   completed: "blue",
+  cancelled: "red",
+  returned: "lime",
   waiting_verification: "orange",
+};
+
+// Mapping status ke label Indonesia
+const statusLabel = {
+  unpaid: "Belum Dibayar",
+  paid: "Sudah Dibayar",
+  pending: "Menunggu Konfirmasi",
+  confirmed: "Terkonfirmasi",
+  processing: "Diproses",
+  completed: "Selesai",
+  cancelled: "Dibatalkan",
+  returned: "Dikembalikan",
+  waiting_verification: "Menunggu Verifikasi",
 };
 
 const PesananPage = () => {
@@ -103,7 +120,7 @@ const PesananPage = () => {
                   </Tag>
                 </div>
                 <div style={{ marginBottom: 8 }}>
-                  <Text strong>Status Pesanan:</Text> <Tag color={statusColor[order.status] || "default"}>{order.status}</Tag>
+                  <Text strong>Status Pesanan:</Text> <Tag color={statusColor[order.status] || "default"}>{statusLabel[order.status] || order.status}</Tag>
                 </div>
                 <div style={{ marginTop: 12 }}>
                   <Text strong>Detail Item:</Text>

@@ -80,14 +80,14 @@ const AuthProvider = ({ children }) => {
       jwtStorage.removeItem();
       setIsLoggedIn(false);
       setUserProfile({});
-      navigate("/login", { replace: true });
+      // navigate("/login", { replace: true }); // HAPUS atau KOMENTARI baris ini
     } catch (err) {
       console.log("Logout error:", err);
       // Fallback: bersihkan state lokal meskipun API gagal
       jwtStorage.removeItem();
       setIsLoggedIn(false);
       setUserProfile({});
-      navigate("/login", { replace: true });
+      // navigate("/login", { replace: true }); // HAPUS atau KOMENTARI baris ini
     }
   };
 

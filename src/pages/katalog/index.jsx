@@ -246,12 +246,6 @@ const Katalog = () => {
               onChange={(e) => setSearchText(e.target.value)}
               style={{ borderRadius: 12, width: '100%' }}
             />
-            <Button
-              type="primary"
-              icon={<FilterOutlined />}
-              size="large"
-              onClick={handleFilter}
-            />
           </Space.Compact>
         </div>
         {/* Filter kategori di bawah search bar */}

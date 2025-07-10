@@ -74,7 +74,7 @@ const Navbar = () => {
   const handleConfirmLogout = () => {
     setIsLogoutConfirmVisible(false);
     logout();
-    navigate('/login');
+    // navigate('/login'); // Hapus atau komentari baris ini
   };
   
   const handleCancelLogout = () => {

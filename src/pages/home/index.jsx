@@ -16,13 +16,6 @@ const DUMMY_REVIEWS = [
   { name: 'Lea Miston', rating: 5, comment: 'Sangat puas, akan sewa lagi di Rentique.' }
 ];
 
-const FEATURE_LIST = [
-  { icon: <ThunderboltOutlined />, title: 'Pengiriman Cepat' },
-  { icon: <SyncOutlined />, title: 'Pengembalian 7 Hari' },
-  { icon: <GiftOutlined />, title: 'Diskon Member' },
-  { icon: <SmileOutlined />, title: 'Layanan Ramah' }
-];
-
 const FILTER_TABS = [
   { key: 'featured', label: 'Featured' },
   { key: 'bestseller', label: 'Top Sellers' },
@@ -227,21 +220,6 @@ const Home = () => {
           </Col>
         </Row>
       </div>
-
-      {/* Feature Bar */}
-      <div style={{ maxWidth: 900, margin: '0 auto', marginBottom: 32 }}>
-        <Row gutter={[24, 24]} justify="center">
-          {FEATURE_LIST.map((f, i) => (
-            <Col xs={12} md={6} key={i}>
-              <div style={{ background: '#fff', borderRadius: 16, boxShadow: '0 2px 12px rgba(0,0,0,0.07)', padding: 20, textAlign: 'center' }}>
-                <div style={{ fontSize: 32, color: '#a7374a', marginBottom: 8 }}>{f.icon}</div>
-                <Text style={{ fontWeight: 600 }}>{f.title}</Text>
-              </div>
-            </Col>
-          ))}
-        </Row>
-      </div>
-
       {/* Category Bar */}
       <div style={{ maxWidth: 1100, margin: '0 auto', marginBottom: 32 }}>
         <Title level={4} style={{ marginBottom: 16, color: '#a7374a', fontWeight: 700, fontSize: 24, textAlign: 'center' }}>Kategori di Rentique</Title>

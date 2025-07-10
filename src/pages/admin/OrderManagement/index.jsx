@@ -324,9 +324,9 @@ const OrderManagementPage = () => {
       key: 'payment_status',
       render: (paymentStatus) => (
         <Tag color={statusColor[paymentStatus] || "default"}>
-          {paymentStatus === 'pending' ? 'MENUNGGU VERIFIKASI' : 
-           paymentStatus === 'paid' ? 'SUDAH DIBAYAR' : 
-           paymentStatus === 'unpaid' ? 'BELUM DIBAYAR' : 
+          {paymentStatus === 'pending' ? 'Menunggu Verifikasi' : 
+           paymentStatus === 'paid' ? 'Sudah Dibayar' : 
+           paymentStatus === 'unpaid' ? 'Belum Dibayar' : 
            paymentStatus?.toUpperCase()}
         </Tag>
       )
@@ -373,11 +373,28 @@ const OrderManagementPage = () => {
     {
       title: 'Kerusakan',
       key: 'damage_level',
-      render: (_, record) => (
-        <Text style={{ color: '#faad14' }}>
-          {record.damage_level === 'none' ? 'Tidak Ada' : record.damage_level}
-        </Text>
-      )
+      render: (_, record) => {
+        if (!record.damage_level) return <Text style={{ color: '#faad14' }}>-</Text>;
+        // Bisa jadi format: "Kostum A: minim|none, Kostum B: sedang|berat"
+        // Pisahkan per kostum
+        const costumeParts = record.damage_level.split(',').map(part => part.trim());
+        const details = costumeParts.map((part, idx) => {
+          if (!part.includes(':')) return null;
+          const [name, levelsStr] = part.split(':');
+          const levels = levelsStr.split('|').map(lvl => lvl.trim());
+          // Ambil hanya yang bukan 'none'
+          const nonNone = levels.filter(lvl => lvl !== 'none');
+          if (nonNone.length === 0) return null;
+          return (
+            <div key={idx}>
+              <b>{name.trim()}:</b> {nonNone.join(', ')}
+            </div>
+          );
+        }).filter(Boolean);
+        // Jika semua none, tampilkan '-'
+        if (details.length === 0) return <Text style={{ color: '#faad14' }}>-</Text>;
+        return <span style={{ color: '#faad14' }}>{details}</span>;
+      }
     },
     {
       title: 'Aksi',
@@ -637,9 +654,9 @@ const OrderManagementPage = () => {
                 </Descriptions.Item>
                 <Descriptions.Item label="Status Pembayaran">
                   <Tag color={statusColor[selectedOrder.payment_status]}>
-                    {selectedOrder.payment_status === 'pending' ? 'MENUNGGU VERIFIKASI' :
-                     selectedOrder.payment_status === 'paid' ? 'SUDAH DIBAYAR' :
-                     selectedOrder.payment_status === 'unpaid' ? 'BELUM DIBAYAR' :
+                    {selectedOrder.payment_status === 'pending' ? 'Menunggu Verifikasi' :
+                     selectedOrder.payment_status === 'paid' ? 'Sudah Dibayar' :
+                     selectedOrder.payment_status === 'unpaid' ? 'Belum Dibayar' :
                      selectedOrder.payment_status?.toUpperCase()}
                   </Tag>
                 </Descriptions.Item>
@@ -813,20 +830,23 @@ const OrderManagementPage = () => {
                   Rp {selectedOrder.deposit_returned?.toLocaleString()}
                 </Descriptions.Item>
                 <Descriptions.Item label="Kerusakan">
-                  {selectedOrder.order_items && selectedOrder.order_items.length > 0 ? (
-                    selectedOrder.order_items.map((item, idx) => (
-                      <div key={item.id} style={{ marginBottom: 4 }}>
-                        <b>{item.costume_name} (Ukuran: {item.size_name})</b>:&nbsp;
-                        {item.damage_level
-                          ? item.damage_level.split('|').map((lvl, i) => (
-                              <span key={i} style={{ marginRight: 8 }}>
-                                Unit {i + 1}: <b>{lvl}</b>
-                              </span>
-                            ))
-                          : 'Tidak Ada'}
-                      </div>
-                    ))
-                  ) : 'Tidak Ada'}
+                  {(() => {
+                    const damageLevelStr = selectedOrder.damage_level;
+                    if (!damageLevelStr) return '-';
+                    const costumeParts = damageLevelStr.split(',').map(part => part.trim());
+                    const details = costumeParts.map((part, idx) => {
+                      if (!part.includes(':')) return null;
+                      const [name, levelsStr] = part.split(':');
+                      const levels = levelsStr.split('|').map(lvl => lvl.trim());
+                      return levels.map((lvl, i) => (
+                        <div key={name + '-' + i}>
+                          <b>{name.trim()}:</b> {lvl === 'none' ? '-' : lvl}
+                        </div>
+                      ));
+                    }).flat().filter(Boolean);
+                    if (details.length === 0) return '-';
+                    return details;
+                  })()}
                 </Descriptions.Item>
               </Descriptions>
 
