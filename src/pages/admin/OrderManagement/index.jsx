@@ -736,53 +736,18 @@ const OrderManagementPage = () => {
                       <Col span={4}>
                         <Text strong>Harga Satuan:</Text>
                         <br />
-                        Rp {item.price_snapshot?.toLocaleString()}
+                        Rp {item.price_per_day?.toLocaleString()}
                       </Col>
                       <Col span={4}>
                         <Text strong>Total:</Text>
                         <br />
                         <Text style={{ color: '#1890ff' }}>
-                          Rp {item.total_price?.toLocaleString()}
+                          Rp {item.price_snapshot?.toLocaleString()}
                         </Text>
                       </Col>
                     </Row>
                   </Card>
                 ))}
-              </div>
-
-              <Divider />
-
-              <div style={{ textAlign: 'center' }}>
-                <Space>
-                  <Select
-                    placeholder="Update Status Pesanan"
-                    value={selectedOrder.status}
-                    onChange={(value) => {
-                      handleStatusUpdate(selectedOrder.id, value);
-                      setIsModalVisible(false);
-                    }}
-                    style={{ minWidth: 150, width: 'auto' }}
-                  >
-                    <Option value="pending">Menunggu Konfirmasi</Option>
-                    <Option value="confirmed" disabled={selectedOrder.payment_status !== 'paid'}>Terkonfirmasi</Option>
-                    <Option value="processing" disabled={selectedOrder.payment_status !== 'paid'}>Diproses</Option>
-                    <Option value="completed" disabled={selectedOrder.payment_status !== 'paid'}>Selesai</Option>
-                    <Option value="cancelled">Dibatalkan</Option>
-                  </Select>
-                  <Select
-                    placeholder="Update Status Pembayaran"
-                    value={selectedOrder.payment_status}
-                    onChange={(value) => {
-                      handlePaymentStatusUpdate(selectedOrder.id, value);
-                      setIsModalVisible(false);
-                    }}
-                    style={{ minWidth: 150, width: 'auto' }}
-                  >
-                    <Option value="unpaid">Belum Dibayar</Option>
-                    <Option value="paid">Sudah Dibayar</Option>
-                    <Option value="pending">Menunggu Verifikasi</Option>
-                  </Select>
-                </Space>
               </div>
 
               <Divider />

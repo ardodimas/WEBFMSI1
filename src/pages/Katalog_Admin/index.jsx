@@ -239,10 +239,11 @@ const KatalogAdmin = () => {
               grid={{
                 gutter: 16,
                 xs: 1,
-                sm: 2,
-                md: 3,
+                sm: 1,
+                md: 2,
                 lg: 4,
-                xl: 4, // Dapat menambahkan aturan lebih lanjut jika perlu
+                xl: 4,
+                xxl: 4,
               }}
               className="katalog-container"
               loading={isLoading}
@@ -251,18 +252,31 @@ const KatalogAdmin = () => {
                 <List.Item key={item.id}>
                   <div className="card-wrapper">
                     <Card
-                      className="kostum-card"
+                      style={{
+                        borderRadius: "15px",
+                        overflow: "hidden",
+                        boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
+                      }}
                       hoverable
                       cover={
-                        <img
-                          alt={item.name}
-                          src={item.image_url}
-                          className="kostum-thumbnail"
-                          onError={(e) => {
-                            e.target.onerror = null;
-                            e.target.src = "https://via.placeholder.com/300x200?text=No+Image";
-                          }}
-                        />
+                        <div style={{ width: "100%", paddingTop: "100%", position: "relative" }}>
+                          <img
+                            alt={item.name}
+                            src={item.image_url}
+                            style={{
+                              position: "absolute",
+                              top: 0,
+                              left: 0,
+                              width: "100%",
+                              height: "100%",
+                              objectFit: "cover",
+                            }}
+                            onError={(e) => {
+                              e.target.onerror = null;
+                              e.target.src = "https://via.placeholder.com/300x200?text=No+Image";
+                            }}
+                          />
+                        </div>
                       }
                       actions={[
                         <EditOutlined key="edit" onClick={() => handleDrawerEdit(item)} />,
