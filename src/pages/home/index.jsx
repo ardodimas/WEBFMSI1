@@ -1,8 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import { Row, Col, Card, Button, Typography, Spin, Rate, Tabs, Avatar } from 'antd';
+import React, { useEffect, useState, useContext } from 'react';
+import { Row, Col, Card, Button, Typography, Spin, Rate, Tabs, Avatar, Input, Form, notification, message, ConfigProvider } from 'antd';
 import { StarOutlined, ThunderboltOutlined, SmileOutlined, GiftOutlined, SyncOutlined, InfoCircleOutlined, ShoppingCartOutlined } from '@ant-design/icons';
+import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../../providers/AuthProvider';
+import { getData, sendData } from '../../utils/api';
+import dayjs from 'dayjs';
 import './Home.css';
-import { getData } from '../../utils/api';
 
 const { Title, Text } = Typography;
 const { Search } = Input;
@@ -33,6 +36,16 @@ const Home = () => {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('featured');
+  const [selectedDetail, setSelectedDetail] = useState(null);
+  const [detailVisible, setDetailVisible] = useState(false);
+  const [selectedCostume, setSelectedCostume] = useState(null);
+  const [open, setOpen] = useState(false);
+  const [totalPrice, setTotalPrice] = useState(0);
+  const [Pemesanan] = Form.useForm();
+  const [api, contextHolder] = notification.useNotification();
+  
+  const { isLoggedIn, userProfile } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (!isLoggedIn) {
