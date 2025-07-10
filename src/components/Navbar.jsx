@@ -10,7 +10,8 @@ import {
   UserOutlined,
   LogoutOutlined,
   ToolOutlined,
-  ProfileOutlined
+  ProfileOutlined,
+  DashboardOutlined
 } from '@ant-design/icons';
 import './Navbar.css';
 import { AuthContext } from '../providers/AuthProvider';
@@ -18,7 +19,6 @@ import LoginPage from '../pages/login';
 
 const Navbar = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [isLoginModalVisible, setIsLoginModalVisible] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -28,7 +28,7 @@ const Navbar = () => {
   // Menu utama navbar (Home, Katalog, dll)
   const menuItems = [
     { key: '/home', label: 'Home', icon: <HomeOutlined /> },
-    { key: '/katalog', label: 'Katalog', icon: <ShoppingOutlined /> },
+    { key: '/katalog', label: 'Koleksi', icon: <ShoppingOutlined /> },
   ];
 
   // Tambahkan menu user
@@ -51,13 +51,21 @@ const Navbar = () => {
   };
   
 
-  // Dropdown avatar hanya untuk Profile dan Logout
+  // Dropdown avatar hanya untuk Profile, Dashboard Admin (khusus admin), dan Logout
   const userMenuItems = [
     {
       key: 'profile',
       label: <Link to="/profile">Profile</Link>,
       icon: <UserOutlined />
     },
+    // Tambahkan Dashboard Admin hanya untuk admin
+    ...(isLoggedIn && userProfile?.role === 'admin' ? [
+      {
+        key: 'dashboard-admin',
+        label: <Link to="/admin">Dashboard Admin</Link>,
+        icon: <DashboardOutlined />
+      }
+    ] : []),
     {
       key: 'logout',
       label: 'Logout',
@@ -90,8 +98,8 @@ const Navbar = () => {
             onClick={() => setIsDrawerOpen(true)}
             className="menu-button"
           />
-          <Link to="/home" className="navbar-brand">
-            My Costum
+          <Link to="/home" className="navbar-brand" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <img src="/images/logo.png" alt="Rentique Logo" style={{ height: 40, width: 'auto', display: 'block' }} />
           </Link>
         </div>
 
@@ -120,7 +128,7 @@ const Navbar = () => {
               <Avatar icon={<UserOutlined />} className="avatar" />
             </Dropdown>
           ) : (
-            <Button type="primary" onClick={() => setIsLoginModalVisible(true)}>
+            <Button type="primary" onClick={() => navigate('/login')}>
               Login
             </Button>
           )}
@@ -153,16 +161,6 @@ const Navbar = () => {
           </div>
         </div>
       </Drawer>
-
-      {/* Modal login */}
-      <Modal
-        open={isLoginModalVisible}
-        onCancel={() => setIsLoginModalVisible(false)}
-        footer={null}
-        centered
-      >
-        <LoginPage onLoginSuccess={() => setIsLoginModalVisible(false)} />
-      </Modal>
 
       <Modal
         title="Konfirmasi Logout"
