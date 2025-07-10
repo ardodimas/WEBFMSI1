@@ -1,0 +1,25 @@
+.admin-tabs-red .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
+  color: #a7374a !important;
+}
+.admin-tabs-red .ant-tabs-ink-bar {
+  background: #a7374a !important;
+}
+.admin-tabs-red .ant-tabs-tab:hover .ant-tabs-tab-btn {
+  color: #a7374a !important;
+}
+.admin-dashboard-content {
+  margin-top: 32px;
+}
+.admin-stats-row {
+  margin-bottom: 24px;
+}
+.admin-stats-card {
+  border-radius: 12px !important;
+  text-align: center;
+  border-color: #a7374a !important;
+}
+.admin-btn-red {
+  background: #a7374a !important;
+  border-color: #a7374a !important;
+  color: #fff !important;
+} 

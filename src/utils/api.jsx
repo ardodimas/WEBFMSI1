@@ -238,15 +238,13 @@ export const logoutAPI = async () => {
       return { isLoggedOut: true };
     }
     
-    let formData = new FormData();
-    formData.append("logout", "Logout");
-    
     const response = await fetch(REACT_APP_API_URL + "/api/auth/logout", {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
       },
-      body: formData,
+      body: JSON.stringify({ logout: true }),
     });
     
     console.log("Logout API response status:", response.status);

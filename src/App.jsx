@@ -14,6 +14,7 @@ import RegisterPage from './pages/Register';
 import { useContext } from "react";
 import { AuthContext } from "./providers/AuthProvider";
 import Home from './pages/home';
+import AdminDashboard from './pages/admin';
 import Footer from './components/Footer';
 
 const pageTitles = {
@@ -115,7 +116,10 @@ function MainContent() {
           path="/manajemen-pesanan" 
           element={<ProtectedRoute allowedRoles={['admin']}><OrderManagementPage /></ProtectedRoute>} 
         />
-
+        <Route 
+          path="/admin" 
+          element={<ProtectedRoute allowedRoles={['admin']}><AdminDashboard /></ProtectedRoute>} 
+        />
         {/* Profile */}
         <Route 
           path="/profile" 
@@ -123,8 +127,8 @@ function MainContent() {
         />
 
         {/* Redirect */}
-        <Route path="/" element={<Navigate to="/katalog" replace />} />
-        <Route path="/dashboard" element={<Navigate to="/katalog" replace />} />
+        <Route path="/" element={<Home />} />
+        <Route path="/dashboard" element={<Navigate to="/home" replace />} />
       </Routes>
     </div>
   );
@@ -138,11 +142,10 @@ function App() {
     return <div>Loading...</div>;
   }
 
-  const isAuthPage = ["/", "/login", "/register"].includes(location.pathname);
+  const isAuthPage = [ "/login", "/register"].includes(location.pathname);
 
   return isAuthPage ? (
     <Routes>
-      <Route path="/" element={<LoginPage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
     </Routes>

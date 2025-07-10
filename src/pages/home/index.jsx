@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Row, Col, Card, Button, Typography, Spin, Rate, Tabs, Avatar } from 'antd';
+import { Row, Col, Card, Button, Typography, Spin, Rate, Tabs, Avatar, Drawer, Form, Input, message, Space, DatePicker, notification, ConfigProvider } from 'antd';
 import { StarOutlined, ThunderboltOutlined, SmileOutlined, GiftOutlined, SyncOutlined, InfoCircleOutlined, ShoppingCartOutlined } from '@ant-design/icons';
 import './Home.css';
 import { getData } from '../../utils/api';
+import dayjs from 'dayjs';
 
 const { Title, Text } = Typography;
 
@@ -32,6 +33,54 @@ const Home = () => {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('featured');
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [selectedCostume, setSelectedCostume] = useState(null);
+  const [selectedSize, setSelectedSize] = useState("");
+  const [totalPrice, setTotalPrice] = useState(0);
+  const [Pemesanan] = Form.useForm();
+  const [api, contextHolder] = notification.useNotification();
+
+  const rental_date = Form.useWatch("rental_date", Pemesanan);
+  const return_date = Form.useWatch("return_date", Pemesanan);
+  const quantity = Form.useWatch("quantity", Pemesanan);
+
+  const disablePastDates = (current) => current && current < dayjs().startOf("day");
+  const disableReturnDates = (current) => current && rental_date && current <= dayjs(rental_date).startOf("day");
+
+  useEffect(() => { Pemesanan.setFieldValue("return_date", null); }, [rental_date]);
+  useEffect(() => {
+    const pricePerDay = selectedCostume?.price_per_day || 0;
+    if (rental_date && return_date && quantity && pricePerDay) {
+      const start = dayjs(rental_date);
+      const end = dayjs(return_date);
+      const days = end.diff(start, "day");
+      if (days >= 0) {
+        const total = (days) * quantity * pricePerDay + 300000;
+        setTotalPrice(total);
+      } else {
+        setTotalPrice(0);
+      }
+    } else {
+      setTotalPrice(0);
+    }
+  }, [rental_date, return_date, quantity, selectedCostume]);
+
+  const showDrawer = (costume) => {
+    setSelectedCostume(costume);
+    setDrawerOpen(true);
+  };
+  const onCloseDrawer = () => {
+    setDrawerOpen(false);
+    setSelectedCostume(null);
+    setSelectedSize("");
+    Pemesanan.resetFields();
+  };
+
+  const handleOrderSubmit = (values) => {
+    // ... implementasi submit sesuai katalog ...
+    message.success('Fitur checkout berhasil (dummy, sesuaikan dengan backend)');
+    onCloseDrawer();
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -151,7 +200,7 @@ const Home = () => {
                     <Button
                       type="primary"
                       icon={<ShoppingCartOutlined />}
-                      href={`/costumes/${item.id}/checkout`}
+                      onClick={() => showDrawer(item)}
                       style={{ background: '#a7374a', borderColor: '#a7374a' }}
                     >
                       Checkout
@@ -184,6 +233,110 @@ const Home = () => {
           ))}
         </Row>
       </div>
+
+      {/* Drawer Checkout */}
+      <Drawer
+        title="Form Pembelian"
+        placement="right"
+        width={500}
+        onClose={onCloseDrawer}
+        open={drawerOpen}
+        extra={
+          <Space>
+            <Button onClick={onCloseDrawer}>Cancel</Button>
+            <Button type="primary" onClick={() => Pemesanan.submit()}>
+              Pesan
+            </Button>
+          </Space>
+        }
+      >
+        {selectedCostume && (
+          <Form
+            form={Pemesanan}
+            layout="vertical"
+            onFinish={handleOrderSubmit}
+            initialValues={{
+              costume_name: selectedCostume.name,
+              price: selectedCostume.price_per_day,
+            }}
+          >
+            <Form.Item
+              label="Tanggal Sewa"
+              name="rental_date"
+              rules={[{ required: true, message: "Pilih tanggal sewa" }]}
+            >
+              <DatePicker 
+                format="YYYY-MM-DD"
+                style={{ width: "100%" }}
+                disabledDate={disablePastDates}
+              />
+            </Form.Item>
+            <Form.Item
+              label="Tanggal Kembali"
+              name="return_date"
+              rules={[{ required: true, message: "Pilih tanggal kembali" }]}
+            >
+              <DatePicker 
+                format="YYYY-MM-DD"
+                style={{ width: "100%" }}
+                disabledDate={disableReturnDates}
+              />
+            </Form.Item>
+            <Form.Item
+              label="Alamat"
+              name="address"
+              rules={[{ required: true, message: "Masukkan alamat" }]}
+            >
+              <Input.TextArea rows={3} />
+            </Form.Item>
+            <Form.Item
+              label="Jumlah"
+              name="quantity"
+              rules={[{ required: true, message: "Masukkan jumlah" }]}
+            >
+              <Input type="number" min={1} />
+            </Form.Item>
+            {/* Ukuran Kostum jika ada */}
+            {selectedCostume.sizes && selectedCostume.sizes.length > 0 && (
+              <Form.Item
+                label="Ukuran Kostum"
+                name="size"
+                rules={[{ required: true, message: "Pilih ukuran kostum" }]}
+              >
+                <Space direction="horizontal" wrap>
+                  {selectedCostume.sizes.map((sizeItem) => {
+                    const sizeName = sizeItem.size?.name;
+                    const sizeId = sizeItem.size?.id;
+                    return (
+                      <Button
+                        key={sizeId}
+                        type={selectedSize === sizeId ? "primary" : "default"}
+                        style={{
+                          margin: "5px",
+                          borderColor: "#a7374a",
+                          color: selectedSize === sizeId ? "white" : "#a7374a",
+                          backgroundColor: selectedSize === sizeId ? "#a7374a" : "white",
+                          cursor: sizeItem.stock > 0 ? "pointer" : "not-allowed",
+                        }}
+                        disabled={sizeItem.stock === 0}
+                        onClick={() => {
+                          setSelectedSize(sizeId);
+                          Pemesanan.setFieldsValue({ size: sizeId });
+                        }}
+                      >
+                        {sizeName}
+                      </Button>
+                    );
+                  })}
+                </Space>
+              </Form.Item>
+            )}
+            <div style={{ marginTop: 16 }}>
+              <Text strong>Total Harga: Rp {totalPrice.toLocaleString('id-ID')}</Text>
+            </div>
+          </Form>
+        )}
+      </Drawer>
     </div>
   );
 };

@@ -52,3 +52,21 @@
   font-size: 13px;
   line-height: 1.4;
 }
+
+.ant-btn-primary, .ant-btn-primary:focus, .ant-btn-primary:hover, .ant-btn-primary:active {
+  background: #a7374a !important;
+  border-color: #a7374a !important;
+  color: #fff !important;
+  box-shadow: 0 2px 8px #a7374a22;
+}
+.ant-btn, .ant-btn:focus, .ant-btn:hover, .ant-btn:active {
+  border-color: #a7374a !important;
+}
+
+.ant-float-btn-primary, .ant-float-btn-primary .ant-float-btn-body {
+  background: #a7374a !important;
+  border-color: #a7374a !important;
+}
+.ant-float-btn-primary .ant-float-btn-body .ant-float-btn-content {
+  color: #fff !important;
+}

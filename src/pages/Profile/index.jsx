@@ -1,6 +1,6 @@
 import { useContext, useState, useEffect } from "react";
 import { Modal, Button, Spin, Form, Input, message, Avatar } from "antd";
-import { UserOutlined } from "@ant-design/icons";
+import { UserOutlined, MailOutlined, PhoneOutlined, HomeOutlined } from "@ant-design/icons";
 import { AuthContext } from "../../providers/AuthProvider";
 import { editDataPrivatePut } from "../../utils/api";
 
@@ -172,41 +172,37 @@ export default function Profile() {
         </Form>
       </Modal>
 
-      <div className="profile-content">
+      <div className="profile-glass-card">
         <Avatar 
-          size={140} 
+          size={120} 
           icon={<UserOutlined />} 
-          className="profile-avatar"
-          style={{
-            backgroundColor: '#a7374a',
-            border: '4px solid #a7374a',
-            fontSize: '60px'
-          }}
+          className="profile-avatar-glass"
         />
-        <div className="profile-name">{userProfile?.name || 'User'}</div>
-        <div className="profile-label">Email</div>
-        <div className="profile-box">
-          <a href={`mailto:${userProfile?.email || ''}`}>
-            {userProfile?.email || 'Email tidak tersedia'}
-          </a>
-        </div>
-        <div className="profile-label">Nomor Telepon</div>
-        <div className="profile-box profile-box-phone">
-          <span>{phone || 'Nomor telepon tidak tersedia'}</span>
-          <span className="edit-addr phone-edit-icon" onClick={handleEditPhone} title="Edit nomor telepon">
-            <svg width="20" height="20" viewBox="0 0 20 20">
-              <path d="M14.85 2.85a1.2 1.2 0 0 1 1.7 1.7l-1.1 1.1-1.7-1.7 1.1-1.1zm-2 2 1.7 1.7-7.2 7.2c-.1.1-.2.2-.3.3l-2.1.6.6-2.1c.1-.1.2-.2.3-.3l7.2-7.2z" fill="#a7374a"/>
-            </svg>
-          </span>
-        </div>
-        <div className="profile-label">Alamat Lengkap</div>
-        <div className="profile-box profile-box-alamat">
-          {address || 'Alamat belum diisi'}
-          <span className="edit-addr" onClick={handleEditAlamat} title="Edit alamat">
-            <svg width="20" height="20" viewBox="0 0 20 20">
-              <path d="M14.85 2.85a1.2 1.2 0 0 1 1.7 1.7l-1.1 1.1-1.7-1.7 1.1-1.1zm-2 2 1.7 1.7-7.2 7.2c-.1.1-.2.2-.3.3l-2.1.6.6-2.1c.1-.1.2-.2.3-.3l7.2-7.2z" fill="#a7374a"/>
-            </svg>
-          </span>
+        <div className="profile-name-glass">{userProfile?.name || 'User'}</div>
+        <div className="profile-info-list">
+          <div className="profile-info-item">
+            <MailOutlined className="profile-info-icon" />
+            <span className="profile-info-label">Email</span>
+            <span className="profile-info-value">
+              <a href={`mailto:${userProfile?.email || ''}`}>{userProfile?.email || 'Email tidak tersedia'}</a>
+            </span>
+          </div>
+          <div className="profile-info-item">
+            <PhoneOutlined className="profile-info-icon" />
+            <span className="profile-info-label">Telepon</span>
+            <span className="profile-info-value">{phone || 'Nomor telepon tidak tersedia'}</span>
+            <span className="profile-info-edit-btn" onClick={handleEditPhone} title="Edit nomor telepon">
+              <svg width="18" height="18" viewBox="0 0 20 20"><path d="M14.85 2.85a1.2 1.2 0 0 1 1.7 1.7l-1.1 1.1-1.7-1.7 1.1-1.1zm-2 2 1.7 1.7-7.2 7.2c-.1.1-.2.2-.3.3l-2.1.6.6-2.1c.1-.1.2-.2.3-.3l7.2-7.2z" fill="#a7374a"/></svg>
+            </span>
+          </div>
+          <div className="profile-info-item">
+            <HomeOutlined className="profile-info-icon" />
+            <span className="profile-info-label">Alamat</span>
+            <span className="profile-info-value">{address || 'Alamat belum diisi'}</span>
+            <span className="profile-info-edit-btn" onClick={handleEditAlamat} title="Edit alamat">
+              <svg width="18" height="18" viewBox="0 0 20 20"><path d="M14.85 2.85a1.2 1.2 0 0 1 1.7 1.7l-1.1 1.1-1.7-1.7 1.1-1.1zm-2 2 1.7 1.7-7.2 7.2c-.1.1-.2.2-.3.3l-2.1.6.6-2.1c.1-.1.2-.2.3-.3l7.2-7.2z" fill="#a7374a"/></svg>
+            </span>
+          </div>
         </div>
       </div>
     </div>
