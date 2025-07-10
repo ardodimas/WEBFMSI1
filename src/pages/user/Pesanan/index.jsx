@@ -91,12 +91,6 @@ const PesananPage = () => {
                   <Text strong>Alamat:</Text> {order.address}
                 </div>
                 <div style={{ marginBottom: 8 }}>
-                  <Text strong>Deposit:</Text> Rp {order.deposit?.toLocaleString()}
-                </div>
-                <div style={{ marginBottom: 8 }}>
-                  <Text strong>Total Harga Pesanan (termasuk deposit):</Text> Rp {order.total_price?.toLocaleString()}
-                </div>
-                <div style={{ marginBottom: 8 }}>
                   <Text strong>Metode Pembayaran:</Text> {order.payment_method || "-"}
                 </div>
                 <div style={{ marginBottom: 8 }}>
@@ -120,11 +114,9 @@ const PesananPage = () => {
                       <div><Text>Jumlah:</Text> {item.quantity}</div>
                       <div><Text>Harga Satuan (per hari):</Text> Rp {item.price_per_day?.toLocaleString()}</div>
                       <div><Text>Total Harga Item:</Text> Rp {item.price_snapshot?.toLocaleString()}</div>
+                      <div><Text>Deposit: </Text> Rp {(item.price_per_day * 0.5).toLocaleString()}</div>
                     </div>
                   ))}
-                </div>
-                <div style={{ marginTop: 8 }}>
-                  <Text strong>Deposit:</Text> Rp 300,000
                 </div>
                 {order.payment_status === "unpaid" && (
                 <div style={{ marginTop: 16 }}>

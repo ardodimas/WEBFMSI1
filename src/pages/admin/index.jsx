@@ -381,7 +381,7 @@ const AdminDashboard = () => {
     <>
       {contextHolder}
       <div className="layout-content admin-dashboard-content">
-        <Title level={2}>Dashboard Admin</Title>
+        <Title level={2} style={{ color: '#8c2d3d' }}>Dashboard Admin</Title>
         <Row gutter={[16, 16]} className="admin-stats-row">
           <Col xs={24} sm={8}>
             <Card bordered className="admin-stats-card">

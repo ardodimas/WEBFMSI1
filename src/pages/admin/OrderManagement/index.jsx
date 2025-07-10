@@ -55,6 +55,17 @@ const orderStatusColor = {
   cancelled: "red"
 };
 
+// Tambahkan state untuk damageLevels per item per unit
+const defaultDamageLevels = (order) => {
+  const result = {};
+  if (order && order.order_items) {
+    order.order_items.forEach(item => {
+      result[item.id] = Array(item.quantity).fill('none');
+    });
+  }
+  return result;
+};
+
 const OrderManagementPage = () => {
   const { userProfile } = useContext(AuthContext);
   const [orders, setOrders] = useState([]);
@@ -85,6 +96,7 @@ const OrderManagementPage = () => {
   const [returnModalVisible, setReturnModalVisible] = useState(false);
   const [returningOrderId, setReturningOrderId] = useState(null);
   const [damageLevel, setDamageLevel] = useState('none');
+  const [damageLevels, setDamageLevels] = useState({});
   const [returnLoading, setReturnLoading] = useState(false);
 
   useEffect(() => {
@@ -187,16 +199,33 @@ const OrderManagementPage = () => {
     }
   };
 
+  // Saat membuka modal return, inisialisasi damageLevels
   const handleReturnOrder = (orderId) => {
+    const order = filteredOrders.find(o => o.id === orderId);
     setReturningOrderId(orderId);
+    setSelectedOrder(order); // pastikan selectedOrder terisi
     setDamageLevel('none');
+    setDamageLevels(defaultDamageLevels(order));
     setReturnModalVisible(true);
+  };
+
+  const handleDamageChange = (itemId, idx, value) => {
+    setDamageLevels(prev => ({
+      ...prev,
+      [itemId]: prev[itemId].map((v, i) => (i === idx ? value : v))
+    }));
   };
 
   const confirmReturnOrder = async () => {
     setReturnLoading(true);
     try {
-      const res = await returnOrderPrivate(returningOrderId, { damage_level: damageLevel });
+      // Siapkan payload damage_levels
+      const payload = Object.entries(damageLevels).map(([itemId, arr]) => ({
+        item_id: Number(itemId),
+        damage_level: arr.join('|')
+      }));
+      console.log("Payload damage_levels:", payload); // DEBUG: cek payload sebelum submit
+      const res = await returnOrderPrivate(returningOrderId, { damage_levels: payload });
       if (res && res.message) {
         message.success(res.message);
         fetchOrders();
@@ -320,14 +349,12 @@ const OrderManagementPage = () => {
       key: 'late',
       render: (_, record) => (
         record.status === 'returned' ? (
-          record.is_late ? (
-            <Tag color="red">
-              Telat {record.late_days} hari
-              <br />Sisa Denda: Rp {Math.max(0, (record.late_fee || 0) - 300000).toLocaleString()}
-            </Tag>
-          ) : (
-            <Tag color="green">Tepat Waktu</Tag>
-          )
+          <Tag color={record.is_late ? "red" : "green"}>
+            {record.is_late ? `Telat ${record.late_days} hari` : "Tepat Waktu"}
+            {record.uncovered_late_fee > 0 && (
+              <><br />Sisa Denda: <span style={{ color: 'red' }}>Rp {record.uncovered_late_fee.toLocaleString()}</span></>
+            )}
+          </Tag>
         ) : (
           <Tag color="default">-</Tag>
         )
@@ -365,7 +392,7 @@ const OrderManagementPage = () => {
           >
             Detail
           </Button>
-          {record.status !== 'returned' && (
+          {record.status !== 'returned' && record.status !== 'cancelled' && (
             <>
               <Select
                 size="small"
@@ -391,7 +418,7 @@ const OrderManagementPage = () => {
                 <Option value="paid">Sudah Dibayar</Option>
                 <Option value="pending">Menunggu Verifikasi</Option>
               </Select>
-              {record.status !== 'returned' && record.status === 'completed' && (
+              {record.status === 'completed' && (
                 <Button
                   type="default"
                   size="small"
@@ -415,6 +442,14 @@ const OrderManagementPage = () => {
       </div>
     );
   }
+
+  // Tambahkan definisi calculatedDeposit sebelum return
+  const calculatedDeposit = selectedOrder?.order_items
+    ? selectedOrder.order_items.reduce(
+        (sum, item) => sum + (item.price_per_day * 0.5 * item.quantity),
+        0
+      )
+    : 0;
 
   return (
     <div className="order-management-page" style={{
@@ -764,7 +799,7 @@ const OrderManagementPage = () => {
                   {selectedOrder.late_days}
                 </Descriptions.Item>
                 <Descriptions.Item label="Sisa Denda">
-                  Rp {Math.max(0, (selectedOrder.late_fee || 0) - 300000).toLocaleString()}
+                  Rp {(selectedOrder.uncovered_late_fee || 0).toLocaleString()}
                 </Descriptions.Item>
               </Descriptions>
 
@@ -772,13 +807,26 @@ const OrderManagementPage = () => {
 
               <Descriptions title="Deposit" bordered column={3}>
                 <Descriptions.Item label="Deposit Awal">
-                  Rp {selectedOrder.deposit?.toLocaleString()}
+                  Rp {calculatedDeposit.toLocaleString()}
                 </Descriptions.Item>
                 <Descriptions.Item label="Deposit Dikembalikan">
                   Rp {selectedOrder.deposit_returned?.toLocaleString()}
                 </Descriptions.Item>
                 <Descriptions.Item label="Kerusakan">
-                  {selectedOrder.damage_level === 'none' ? 'Tidak Ada' : selectedOrder.damage_level}
+                  {selectedOrder.order_items && selectedOrder.order_items.length > 0 ? (
+                    selectedOrder.order_items.map((item, idx) => (
+                      <div key={item.id} style={{ marginBottom: 4 }}>
+                        <b>{item.costume_name} (Ukuran: {item.size_name})</b>:&nbsp;
+                        {item.damage_level
+                          ? item.damage_level.split('|').map((lvl, i) => (
+                              <span key={i} style={{ marginRight: 8 }}>
+                                Unit {i + 1}: <b>{lvl}</b>
+                              </span>
+                            ))
+                          : 'Tidak Ada'}
+                      </div>
+                    ))
+                  ) : 'Tidak Ada'}
                 </Descriptions.Item>
               </Descriptions>
 
@@ -814,15 +862,31 @@ const OrderManagementPage = () => {
           centered
         >
           <div>
-            <p>Pilih tingkat kerusakan kostum:</p>
-            <Select value={damageLevel} onChange={setDamageLevel} style={{ width: 200 }}>
-              <Option value="none">Tidak Ada</Option>
-              <Option value="minim">Minim (Potong 10%)</Option>
-              <Option value="sedang">Sedang (Potong 50%)</Option>
-              <Option value="berat">Berat (Potong 100%)</Option>
-            </Select>
+            <p>Pilih tingkat kerusakan kostum per unit:</p>
+            {selectedOrder?.order_items?.map(item => (
+              <div key={item.id} style={{ marginBottom: 12 }}>
+                <b>{item.costume_name} (Ukuran: {item.size_name}, Qty: {item.quantity})</b>
+                <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginTop: 4 }}>
+                  {[...Array(item.quantity)].map((_, idx) => (
+                    <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: 4, marginBottom: 4 }}>
+                      <span style={{ minWidth: 50 }}>Unit {idx + 1}:</span>
+                      <Select
+                        value={damageLevels[item.id]?.[idx] || 'none'}
+                        onChange={val => handleDamageChange(item.id, idx, val)}
+                        style={{ width: 120 }}
+                      >
+                        <Option value="none">Tidak Ada</Option>
+                        <Option value="minim">Minim</Option>
+                        <Option value="sedang">Sedang</Option>
+                        <Option value="berat">Berat</Option>
+                      </Select>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
             <div style={{ marginTop: 16 }}>
-              <b>Catatan:</b> Deposit akan dipotong jika ada keterlambatan atau kerusakan.
+              <b>Catatan:</b> Deposit akan dipotong sesuai kerusakan tiap unit dan denda keterlambatan jika ada.
             </div>
           </div>
         </Modal>

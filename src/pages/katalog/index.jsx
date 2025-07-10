@@ -48,11 +48,6 @@ const Katalog = () => {
   const [api, contextHolder] = notification.useNotification();
 
   useEffect(() => {
-    if (!isLoggedIn) {
-      navigate("/login", { replace: true });
-      return;
-    }
-
     setIsLoading(true);
     fetch("http://127.0.0.1:5000/api/costumes")
       .then((res) => res.json())
@@ -64,7 +59,16 @@ const Katalog = () => {
       .finally(() => {
         setIsLoading(false);
       });
-  }, [isLoggedIn, navigate]);
+  }, []);
+
+  // Ambil data kategori dari backend
+  useEffect(() => {
+    getData("/api/categories")
+      .then((resp) => {
+        if (Array.isArray(resp)) setCategories(resp);
+        else if (Array.isArray(resp?.datas)) setCategories(resp.datas);
+      });
+  }, []);
 
   const showDrawer = (costume) => {
     setSelectedCostume(costume);
@@ -86,16 +90,18 @@ const Katalog = () => {
   };
 
   const [totalPrice, setTotalPrice] = useState(0);
+  const [deposit, setDeposit] = useState(0); // Tetap gunakan state deposit
   const [Pemesanan] = Form.useForm();
 
   const rental_date = Form.useWatch("rental_date", Pemesanan);
   const return_date = Form.useWatch("return_date", Pemesanan);
   const quantity = Form.useWatch("quantity", Pemesanan);
 
-  // Tidak boleh memilih tanggal sebelum hari ini
-  const disablePastDates = (current) => {
-    return current && current < dayjs().startOf("day");
-  };
+   // Tidak boleh memilih tanggal sebelum hari ini
+   const disablePastDates = (current) => {
+    return current && current < dayjs().startOf("day"); // Aktifkan ini untuk membatasi tanggal sebelum hari ini
+  // return false; // Nonaktifkan pembatasan, semua tanggal bisa dipilih
+ };
 
   // Tidak boleh memilih tanggal yang sama atau sebelum tanggal sewa
   const disableReturnDates = (current) => {
@@ -121,13 +127,18 @@ const Katalog = () => {
       if (days >= 0) {
         const total = (days) * quantity * pricePerDay;
         setTotalPrice(total);
+        setDeposit(pricePerDay * 0.5); // Deposit adalah 50% dari harga satuan per hari
       } else {
         setTotalPrice(0);
+        setDeposit(0);
       }
     } else {
       setTotalPrice(0);
+      setDeposit(0);
     }
   }, [rental_date, return_date, quantity, selectedCostume]);
+
+  const grandTotal = totalPrice + deposit;
 
   const handleOrderSubmit = (values) => {
     const { address, quantity, rental_date, return_date, size, payment_method } = values;
@@ -141,6 +152,8 @@ const Katalog = () => {
       payment_method, // Menambahkan metode pembayaran
     };
 
+    const deposit = selectedCostume && quantity ? selectedCostume.price_per_day * 0.5 * quantity : 0;
+
     const orderPayload = {
       ...orderData,
       rental_date: dayjs(rental_date).format("YYYY-MM-DD"),
@@ -149,14 +162,16 @@ const Katalog = () => {
       quantity,
       size,
       price_per_day: selectedCostume.price_per_day,
-      price_snapshot: totalPrice,
+      price_snapshot: grandTotal, // Kirim total harga + deposit sebagai price_snapshot
+      deposit: deposit, // Kirim deposit yang sudah benar
+      grand_total: grandTotal, // Kirim total harga + deposit
     };
 
     // Mengirimkan data pesanan ke backend
     sendData("/api/orders", orderPayload)
       .then((resp) => {
         if (resp?.id) {
-          openNotificationWithIcon("success", "Pembelian Berhasil!", "Pembelian berhasil dilakukan.");
+          openNotificationWithIcon("success", "Penyewaan Berhasil!", "Penyewaan berhasil dilakukan.");
           setSelectedCostume(null);
           fetch("http://127.0.0.1:5000/api/costumes")
             .then((res) => res.json())
@@ -164,7 +179,7 @@ const Katalog = () => {
           Pemesanan.resetFields();
           onClose();
         } else {
-          openNotificationWithIcon("error", "Pembelian Gagal!", "Pembelian gagal dilakukan.");
+          openNotificationWithIcon("error", "Penyewaan Gagal!", "Penyewaan gagal dilakukan.");
         }
       })
       .catch((err) => {
@@ -186,6 +201,13 @@ const Katalog = () => {
     setSelectedDetail(null);
   };
 
+  const handleCheckoutClick = (item) => {
+    if (!isLoggedIn) {
+      navigate("/login");
+    } else {
+      showDrawer(item);
+    }
+  };
 
   const openNotificationWithIcon = (type, message, description) => {
     api[type]({
@@ -193,6 +215,14 @@ const Katalog = () => {
       description: description,
     });
   };
+
+  // Filter data sesuai kategori, search, dan hanya yang tersedia
+  const filteredData = dataSources
+    .filter(item =>
+      item.status === 'available' &&
+      (selectedCategory === 'all' || item.category_id === selectedCategory) &&
+      item.name.toLowerCase().includes(searchText.toLowerCase())
+    );
 
   return (
     <ConfigProvider theme={{ token: { colorPrimary: "#a7374a" } }}>
@@ -202,33 +232,51 @@ const Katalog = () => {
           <Typography.Title level={2} style={{ color: '#a7374a', fontWeight: 700, marginBottom: 8, textAlign: 'center' }}>
             Katalog Sewa Kostum
           </Typography.Title>
-          <Typography.Text style={{ fontSize: 18, color: '#555', textAlign: 'center', maxWidth: 600 }}>
-            Temukan berbagai pilihan kostum terbaik untuk segala acara. Proses sewa mudah, koleksi lengkap, dan harga terjangkau!
-          </Typography.Text>
+
+        </div>
+        {/* Search bar di atas */}
+        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 16 }}>
+          <Space.Compact style={{ minWidth: 400, maxWidth: 1200, width: '100%' }}>
+            <Search
+              placeholder="Cari katalog..."
+              allowClear
+              enterButton={<SearchOutlined />}
+              size="large"
+              onSearch={handleSearch}
+              onChange={(e) => setSearchText(e.target.value)}
+              style={{ borderRadius: 12, width: '100%' }}
+            />
+            <Button
+              type="primary"
+              icon={<FilterOutlined />}
+              size="large"
+              onClick={handleFilter}
+            />
+          </Space.Compact>
+        </div>
+        {/* Filter kategori di bawah search bar */}
+        <div style={{ display: 'flex', justifyContent: 'center', gap: 12, flexWrap: 'wrap', marginBottom: 24 }}>
+          <Button
+            type={selectedCategory === 'all' ? 'primary' : 'default'}
+            onClick={() => setSelectedCategory('all')}
+            style={{ borderRadius: 6, minWidth: 80 }}
+          >
+            Semua
+          </Button>
+          {categories.map(cat => (
+            <Button
+              key={cat.id}
+              type={selectedCategory === cat.id ? 'primary' : 'default'}
+              onClick={() => setSelectedCategory(cat.id)}
+              style={{ borderRadius: 6, minWidth: 80 }}
+            >
+              {cat.name}
+            </Button>
+          ))}
         </div>
         <Row gutter={[24, 0]}>
           <Col xs={23} className="mb-24">
             <Card bordered={false} className="circlebox h-full w-full">
-              <div style={{ marginBottom: "20px" }}>
-                <Space.Compact style={{ width: "100%" }}>
-                  <Search
-                    placeholder="Cari katalog..."
-                    allowClear
-                    enterButton={<SearchOutlined />}
-                    size="large"
-                    onSearch={handleSearch}
-                    onChange={(e) => setSearchText(e.target.value)}
-                    style={{ width: "calc(100% - 50px)" }}
-                  />
-                  <Button
-                    type="primary"
-                    icon={<FilterOutlined />}
-                    size="large"
-                    onClick={handleFilter}
-                    style={{ width: "50px" }}
-                  />
-                </Space.Compact>
-              </div>
 
               {isLoading ? (
                 <div>Sedang memuat data...</div>
@@ -243,9 +291,7 @@ const Katalog = () => {
                     xl: 4,
                     xxl: 4,
                   }}
-                  dataSource={dataSources.filter((item) =>
-                    item.name.toLowerCase().includes(searchText.toLowerCase())
-                  )}
+                  dataSource={filteredData}
                   renderItem={(item) => (
                     <List.Item key={item.id}>
                       <Card
@@ -286,7 +332,7 @@ const Katalog = () => {
                           <Button
                             type="primary"
                             icon={<ShoppingCartOutlined />}
-                            onClick={() => showDrawer(item)} // Menampilkan drawer
+                            onClick={() => handleCheckoutClick(item)}
                           >
                             Checkout
                           </Button>,
@@ -328,7 +374,7 @@ const Katalog = () => {
 
         {/* Form Pemesanan dalam Drawer */}
         <Drawer
-          title="Form Pembelian"
+          title="Form Penyewaan"
           placement={placement}
           width={500}
           onClose={onClose}
@@ -453,8 +499,18 @@ const Katalog = () => {
               </Form.Item>
               {/* Total Harga */}
               <div style={{ marginTop: "16px" }}>
-                <Text strong>Total Harga: </Text>
+                <Text strong>Harga Sewa: </Text>
                 <Text>Rp {totalPrice.toLocaleString("id-ID")}</Text>
+              </div>
+              {/* Deposit */}
+              <div style={{ marginTop: "8px" }}>
+                <Text strong>Deposit: </Text>
+                <Text>Rp {(selectedCostume && quantity ? selectedCostume.price_per_day * 0.5 * quantity : 0).toLocaleString("id-ID")}</Text>
+              </div>
+              {/* Grand Total */}
+              <div style={{ marginTop: "8px" }}>
+                <Text strong>Total Harga: </Text>
+                <Text>Rp {grandTotal.toLocaleString("id-ID")}</Text>
               </div>
             </Form>
           )}

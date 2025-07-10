@@ -48,6 +48,7 @@ const KatalogAdmin = () => {
   const [isEdit, setIsEdit] = useState(false);
   const [idSelected, setIdSelected] = useState(null);
   const [totalSizeStock, setTotalSizeStock] = useState(0);
+  const [selectedCategory, setSelectedCategory] = useState(null);
 
   const [InputCostume] = Form.useForm();
   const [api, contextHolder] = notification.useNotification();
@@ -220,6 +221,11 @@ const KatalogAdmin = () => {
     }
   };
 
+  // Filter dataSources sesuai kategori
+  const filteredData = selectedCategory
+    ? dataSources.filter(item => item.category_id === selectedCategory)
+    : dataSources;
+
   return (
     <div className="layout-content">
       {contextHolder}
@@ -227,7 +233,7 @@ const KatalogAdmin = () => {
         <Col xs={23} className="mb-24">
           <Card bordered={false}>
             <div className="header-section">
-              <Title level={2} className="gradient-text">Manajemen Kostum</Title>
+              <Title level={2} style={{ color: '#8c2d3d' }} className="gradient-text">Manajemen Kostum</Title>
             </div>
             <FloatButton
               shape="circle"
@@ -235,6 +241,27 @@ const KatalogAdmin = () => {
               icon={<PlusCircleOutlined />}
               onClick={handleDrawer}
             />
+            {/* Filter kategori dengan button horizontal */}
+            <div style={{ display: 'flex', gap: 12, marginBottom: 16, flexWrap: 'wrap' }}>
+              <Button
+                type={!selectedCategory ? 'primary' : 'default'}
+                onClick={() => setSelectedCategory(null)}
+                style={{ borderRadius: 12, minWidth: 80 }}
+              >
+                Semua
+              </Button>
+              {categories.map(cat => (
+                <Button
+                  key={cat.id}
+                  type={selectedCategory === cat.id ? 'primary' : 'default'}
+                  onClick={() => setSelectedCategory(cat.id)}
+                  style={{ borderRadius: 12, minWidth: 80 }}
+                >
+                  {cat.name}
+                </Button>
+              ))}
+            </div>
+            {/* List dibawahnya */}
             <List
               grid={{
                 gutter: 16,
@@ -246,8 +273,9 @@ const KatalogAdmin = () => {
                 xxl: 4,
               }}
               className="katalog-container"
+              style={{ width: '100%', padding: 16 }}
               loading={isLoading}
-              dataSource={dataSources}
+              dataSource={filteredData}
               renderItem={(item) => (
                 <List.Item key={item.id}>
                   <div className="card-wrapper">
@@ -417,39 +445,49 @@ const KatalogAdmin = () => {
           <Form.List name="sizes">
             {(fields, { add, remove }) => (
               <>
-                {fields.map(({ key, name, ...restField }) => (
-                  <Space
-                    key={key}
-                    style={{ display: "flex", marginBottom: 8 }}
-                    align="baseline"
-                  >
-                    <Form.Item
-                      {...restField}
-                      name={[name, "size_id"]}
-                      rules={[{ required: true, message: "Ukuran harus dipilih!" }]}
+                {fields.map(({ key, name, ...restField }, idx) => {
+                  // Ambil semua size_id yang sudah dipilih, kecuali untuk field ini sendiri
+                  const selectedSizeIds = (InputCostume.getFieldValue('sizes') || [])
+                    .map((item, i) => (i !== name ? item?.size_id : null))
+                    .filter((v) => v !== null && v !== undefined);
+                  return (
+                    <Space
+                      key={key}
+                      style={{ display: "flex", marginBottom: 8 }}
+                      align="baseline"
                     >
-                      <Select placeholder="Pilih ukuran" style={{ width: 120 }}>
-                        {sizes.map((size) => (
-                          <Option key={size.id} value={size.id}>
-                            {size.name}
-                          </Option>
-                        ))}
-                      </Select>
-                    </Form.Item>
-                    <Form.Item
-                      {...restField}
-                      name={[name, "stock"]}
-                      rules={[{ required: true, message: "Stok harus diisi!" }]}
-                    >
-                      <InputNumber
-                        placeholder="Stok"
-                        min={0}
-                        style={{ width: 100 }}
-                      />
-                    </Form.Item>
-                    <MinusCircleOutlined onClick={() => remove(name)} />
-                  </Space>
-                ))}
+                      <Form.Item
+                        {...restField}
+                        name={[name, "size_id"]}
+                        rules={[{ required: true, message: "Ukuran harus dipilih!" }]}
+                      >
+                        <Select placeholder="Pilih ukuran" style={{ width: 120 }}>
+                          {sizes
+                            .filter((size) =>
+                              selectedSizeIds.indexOf(size.id) === -1 || (InputCostume.getFieldValue(["sizes", name, "size_id"]) === size.id)
+                            )
+                            .map((size) => (
+                              <Option key={size.id} value={size.id}>
+                                {size.name}
+                              </Option>
+                            ))}
+                        </Select>
+                      </Form.Item>
+                      <Form.Item
+                        {...restField}
+                        name={[name, "stock"]}
+                        rules={[{ required: true, message: "Stok harus diisi!" }]}
+                      >
+                        <InputNumber
+                          placeholder="Stok"
+                          min={0}
+                          style={{ width: 100 }}
+                        />
+                      </Form.Item>
+                      <MinusCircleOutlined onClick={() => remove(name)} />
+                    </Space>
+                  );
+                })}
                 <Form.Item>
                   <Button
                     type="dashed"
