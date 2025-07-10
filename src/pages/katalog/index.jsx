@@ -253,6 +253,10 @@ const Katalog = () => {
                           borderRadius: "15px",
                           overflow: "hidden",
                           boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
+                          minHeight: 370,
+                          display: 'flex',
+                          flexDirection: 'column',
+                          justifyContent: 'space-between',
                         }}
                         cover={
                           <div style={{ width: "100%", paddingTop: "100%", position: "relative" }}>
@@ -288,10 +292,31 @@ const Katalog = () => {
                           </Button>,
                         ]}
                       >
-                        <Card.Meta
-                          title={item.name}
-                          description={item.description}
-                        />
+                        <div style={{ minHeight: 120, maxHeight: 120, display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+                          <div style={{ fontWeight: 700, fontSize: 16 }}>{item.name}</div>
+                          <div
+                            style={{
+                              color: '#888',
+                              marginBottom: 8,
+                              overflow: 'hidden',
+                              textOverflow: 'ellipsis',
+                              display: '-webkit-box',
+                              WebkitLineClamp: 2,
+                              WebkitBoxOrient: 'vertical',
+                              minHeight: 40,
+                              maxHeight: 40,
+                            }}
+                          >
+                            {item.description}
+                          </div>
+                          <div>
+                            <span style={{ fontWeight: 600, color: '#a7374a' }}>
+                              Rp {item.price_per_day?.toLocaleString("id-ID")}/hari
+                            </span>
+                            <br />
+                            <span style={{ color: '#888' }}>Stok: {item.stock}</span>
+                          </div>
+                        </div>
                       </Card>
                     </List.Item>
                   )}

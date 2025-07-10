@@ -183,7 +183,7 @@ export default function Profile() {
             fontSize: '60px'
           }}
         />
-        <div className="profile-name">{userProfile?.name || 'User'}</div>
+        <div className="profile-name" style={{ color: '#a7374a' }}>{userProfile?.name || 'User'}</div>
         <div className="profile-label">Email</div>
         <div className="profile-box">
           <a href={`mailto:${userProfile?.email || ''}`}>
