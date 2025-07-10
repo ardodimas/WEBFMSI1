@@ -131,7 +131,7 @@ const PesananPage = () => {
                       <div><Text>Jumlah:</Text> {item.quantity}</div>
                       <div><Text>Harga Satuan (per hari):</Text> Rp {item.price_per_day?.toLocaleString()}</div>
                       <div><Text>Total Harga Item:</Text> Rp {item.price_snapshot?.toLocaleString()}</div>
-                      <div><Text>Deposit: </Text> Rp {(item.price_per_day * 0.5).toLocaleString()}</div>
+                      <div><Text>Deposit: </Text> Rp {(item.quantity * item.price_per_day * 0.5).toLocaleString()}</div>
                     </div>
                   ))}
                 </div>
