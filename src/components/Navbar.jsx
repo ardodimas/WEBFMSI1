@@ -39,6 +39,7 @@ const Navbar = () => {
   // Tambahkan menu admin
   if (isLoggedIn && userProfile?.role === 'admin') {
     menuItems.push(
+      { key: 'dashboard-admin', label: <Link to="/admin">Dashboard Admin</Link>, icon: <DashboardOutlined />},
       { key: '/katalog-admin', label: 'Katalog Admin', icon: <ToolOutlined /> },
       { key: '/manajemen-pesanan', label: 'Manajemen Pesanan', icon: <ProfileOutlined /> }
     );
@@ -58,14 +59,6 @@ const Navbar = () => {
       label: <Link to="/profile">Profile</Link>,
       icon: <UserOutlined />
     },
-    // Tambahkan Dashboard Admin hanya untuk admin
-    ...(isLoggedIn && userProfile?.role === 'admin' ? [
-      {
-        key: 'dashboard-admin',
-        label: <Link to="/admin">Dashboard Admin</Link>,
-        icon: <DashboardOutlined />
-      }
-    ] : []),
     {
       key: 'logout',
       label: 'Logout',

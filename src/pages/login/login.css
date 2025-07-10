@@ -2,39 +2,63 @@
   min-height: 100vh;
 }
 
-.login-row {
-  width: 100%;
-  height: 100%;
-  padding-right: 30px;
-}
-
 .login-content {
-  height: 100%;
-  background: url("/images/login-dragon.png") center center / cover no-repeat;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.login-form-wrapper {
-  background-color: rgba(255, 230, 230, 0.8); /* transparansi 80% */
-  backdrop-filter: blur(5px);
-  height: 100%;
-  padding: 60px;
+  height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  border-radius: 16px;
+  background-color: #a32033; /* Border/padding luarnya */
 }
 
-.login-form-container h2 {
-  color: #a32033;
+.login-row {
+  width: 90%;
+  height: 90%;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.login-left-panel {
+  background: url('/images/login-dragon.png') no-repeat center center;
+  background-size: cover;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+  border-top-left-radius: 20px;
+  border-bottom-left-radius: 20px;
+}
+
+.promo-text h2 {
+  font-size: 32px;
   font-weight: bold;
+  margin-bottom: 20px;
+  color: white;
+}
+
+.promo-text p,
+.promo-text span {
+  font-size: 16px;
+  color: white;
+}
+
+.login-right-panel {
+  background-color: #f4d4dd;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 60px;
+  border-top-right-radius: 20px;
+  border-bottom-right-radius: 20px;
 }
 
 .login-form-container {
   width: 100%;
-  max-width: 400px;
+  max-width: 380px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
 .login-form {
@@ -47,6 +71,7 @@
   width: 100%;
   height: 40px;
   font-weight: bold;
+  border-radius: 8px;
 }
 
 .login-button:hover {
@@ -68,6 +93,7 @@
 .login-divider span {
   padding: 0 12px;
   position: relative;
+  background-color: #f3d9e1;
   z-index: 1;
 }
 
@@ -88,13 +114,18 @@
   gap: 16px;
 }
 
-.social-icons img {
-  width: 36px;
-  height: 36px;
+.social-icons svg {
+  font-size: 32px;
   cursor: pointer;
   transition: transform 0.2s;
+  color: #a32033;
 }
 
-.social-icons img:hover {
+.social-icons svg:hover {
   transform: scale(1.1);
+}
+
+.login-register-link {
+  color: #a32033 !important;
+  font-weight: bold;
 }

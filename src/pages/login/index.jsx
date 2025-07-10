@@ -47,64 +47,71 @@ const LoginPage = () => {
     <Layout className="login-layout">
       {contextHolder}
       <Content className="login-content">
-        <Row className="login-row" justify="end" align="middle">
-          <Col className="login-form-wrapper" span={12}>
-            <div className="login-form-container">
-              <Title level={2}>Masuk ke Dunia Kostum Favoritmu!</Title>
-              <Text>
-                Temukan ratusan kostum unik dan menarik untuk setiap acara. <br />
-                Masuk sekarang untuk memulai pemesananmu!
-              </Text>
+      <Row className="login-row">
+        {/* Panel Kiri */}
+        <Col span={12} className="login-left-panel">
+          <div className="promo-text">
+            <Title level={2}>Masuk ke Dunia <br /> Kostum Favoritmu!</Title>
+            <Text>
+              Temukan ratusan kostum unik dan menarik untuk setiap acara. <br />
+              Masuk sekarang untuk memulai pemesananmu!
+            </Text>
+          </div>
+        </Col>
 
-              <Form layout="vertical" onFinish={handleLogin} className="login-form">
-                <Form.Item
-                  label="Email"
-                  name="email"
-                  rules={[{ required: true, message: "Masukkan email Anda!" }]}
+        {/* Panel Kanan */}
+        <Col span={12} className="login-right-panel">
+          <div className="login-form-container">
+            <Title level={3}>Sign In</Title>
+            <Form layout="vertical" onFinish={handleLogin} className="login-form">
+              <Form.Item
+                label="Email"
+                name="email"
+                rules={[{ required: true, message: "Masukkan email Anda!" }]}
+              >
+                <Input value={email} onChange={(e) => setEmail(e.target.value)} />
+              </Form.Item>
+
+              <Form.Item
+                label="Password"
+                name="password"
+                rules={[{ required: true, message: "Masukkan password Anda!" }]}
+              >
+                <Input.Password value={password} onChange={(e) => setPassword(e.target.value)} />
+              </Form.Item>
+
+              <Row justify="space-between" className="login-links">
+                <Text type="secondary" className="forgot-password">Lupa kata sandi?</Text>
+                <Text type="secondary">
+                  Belum memiliki akun? <Link to="/register" className="login-register-link">Daftar</Link>
+                </Text>
+              </Row>
+
+              <Form.Item>
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  className="login-button"
+                  disabled={!email || !password}
                 >
-                  <Input value={email} onChange={(e) => setEmail(e.target.value)} />
-                </Form.Item>
+                  Login
+                </Button>
+              </Form.Item>
+            </Form>
 
-                <Form.Item
-                  label="Password"
-                  name="password"
-                  rules={[{ required: true, message: "Masukkan password Anda!" }]}
-                >
-                  <Input.Password value={password} onChange={(e) => setPassword(e.target.value)} />
-                </Form.Item>
-
-                <Row justify="space-between" className="login-links">
-                  <Text type="secondary" className="forgot-password">Lupa kata sandi?</Text>
-                  <Text type="secondary">
-                    Belum memiliki akun? <Link to="/register">Daftar</Link>
-                  </Text>
-                </Row>
-
-                <Form.Item>
-                  <Button
-                    type="primary"
-                    htmlType="submit"
-                    className="login-button"
-                    disabled={!email || !password}
-                  >
-                    Login
-                  </Button>
-                </Form.Item>
-              </Form>
-
-              <div className="login-divider">
-                <span>Or sign up with</span>
-              </div>
-
-              <div className="social-icons">
-                <GoogleOutlined style={{ fontSize: "32px", cursor: "pointer", color: "#a32033" }} />
-                <TwitterOutlined style={{ fontSize: "32px", cursor: "pointer", color: "#a32033" }} />
-                <FacebookOutlined style={{ fontSize: "32px", cursor: "pointer", color: "#a32033" }} />
-              </div>
+            <div className="login-divider">
+              <span>Or sign up with</span>
             </div>
-          </Col>
-        </Row>
-      </Content>
+
+            <div className="social-icons">
+              <GoogleOutlined />
+              <TwitterOutlined />
+              <FacebookOutlined />
+            </div>
+          </div>
+        </Col>
+      </Row>
+    </Content>
     </Layout>
   );
 };
