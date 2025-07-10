@@ -242,6 +242,7 @@ const KatalogAdmin = () => {
                 sm: 2,
                 md: 3,
                 lg: 4,
+                xl: 4, // Dapat menambahkan aturan lebih lanjut jika perlu
               }}
               className="katalog-container"
               loading={isLoading}
@@ -278,12 +279,12 @@ const KatalogAdmin = () => {
                         <div className="kostum-title">{item.name}</div>
                         <div className="kostum-description">{item.description}</div>
                         <div className="kostum-footer">
-                          <Tag color={item.status === 'available' ? 'green' : 'red'}>
-                            {item.status === 'available' ? 'Tersedia' : 'Tidak Tersedia'}
+                          <Tag color={item.status === "available" ? "green" : "red"}>
+                            {item.status === "available" ? "Tersedia" : "Tidak Tersedia"}
                           </Tag>
                           <br />
                           <Text strong>
-                            Rp {item.price_per_day?.toLocaleString('id-ID')}/hari
+                            Rp {item.price_per_day?.toLocaleString("id-ID")}/hari
                           </Text>
                           <br />
                           <Text type="secondary">Stok: {item.stock}</Text>

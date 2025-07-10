@@ -67,13 +67,6 @@ const PesananPage = () => {
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
         <h2>Daftar Pesanan Saya</h2>
-        <Button 
-          icon={<ReloadOutlined />} 
-          onClick={fetchOrders}
-          loading={loading}
-        >
-          Refresh
-        </Button>
       </div>
       {orders.length === 0 ? (
         <div>Belum ada pesanan.</div>
