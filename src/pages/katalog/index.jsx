@@ -100,7 +100,7 @@ const Katalog = () => {
    // Tidak boleh memilih tanggal sebelum hari ini
    const disablePastDates = (current) => {
     return current && current < dayjs().startOf("day"); // Aktifkan ini untuk membatasi tanggal sebelum hari ini
-  // return false; // Nonaktifkan pembatasan, semua tanggal bisa dipilih
+   // return false; // Nonaktifkan pembatasan, semua tanggal bisa dipilih
  };
 
   // Tidak boleh memilih tanggal yang sama atau sebelum tanggal sewa

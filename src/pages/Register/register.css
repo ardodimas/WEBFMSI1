@@ -49,7 +49,7 @@
 
 /* Panel KANAN (Gambar & Teks) */
 .register-right-panel {
-  background: url("/images/login-dragon.png") no-repeat center center;
+  background: url("/images/login.jpg") no-repeat center center;
   background-size: cover;
   color: white;
   display: flex;

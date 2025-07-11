@@ -19,11 +19,11 @@
 }
 
 .login-left-panel {
-  background: url('/images/login-dragon.png') no-repeat center center;
+  background: url('/images/login.jpg') no-repeat center center;
   background-size: cover;
   color: white;
   display: flex;
-  justify-content: center;
+  justify-content: center;  
   align-items: center;
   padding: 40px;
   border-top-left-radius: 20px;
@@ -60,10 +60,10 @@
   flex-direction: column;
   gap: 16px;
 }
-
+/* 
 .login-form {
-  margin-top: 32px;
-}
+  margin-top: 10px;
+} */
 
 .login-button {
   background-color: #a32033;

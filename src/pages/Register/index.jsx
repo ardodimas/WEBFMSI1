@@ -1,7 +1,7 @@
 import { Layout, Button, Row, Col, Typography, Form, Input, notification } from "antd";
 import { useState } from "react";
 import { sendData } from "../../utils/api";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import "./register.css";  // Pastikan ini merujuk ke register.css yang telah diperbarui
 
 const { Title, Text } = Typography;
@@ -85,6 +85,13 @@ const RegisterPage = () => {
                   Create Account
                 </Button>
               </Form.Item>
+              {/* Tambahkan link ke login di bawah tombol */}
+              <div style={{ textAlign: "center", marginTop: 16 }}>
+                Sudah punya akun?{" "}
+                <Link to="/login" style={{ color: "#a32033", fontWeight: "bold" }}>
+                  Login di sini
+                </Link>
+              </div>
             </Form>
           </div>
         </Col>

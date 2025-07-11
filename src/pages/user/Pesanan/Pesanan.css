@@ -55,4 +55,14 @@
 .pesanan-status.unpaid { background: #ffeaea; color: #a32033; }
 .pesanan-status.paid { background: #eaffea; color: #1a7f37; }
 .pesanan-status.pending { background: #fffbe6; color: #bfa100; }
-.pesanan-status.completed { background: #e6f7ff; color: #1890ff; } 
+.pesanan-status.completed { background: #e6f7ff; color: #1890ff; }
+
+.pesan-ajakan {
+  color: #a32033; /* merah sesuai tema, atau gunakan 'red' jika ingin merah standar */
+  font-size: 16px;
+  margin-bottom: 20px;
+}
+
+.pesan-merah {
+  color: #a32033; /* atau gunakan 'red' jika ingin merah standar */
+} 

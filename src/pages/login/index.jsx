@@ -81,7 +81,7 @@ const LoginPage = () => {
               </Form.Item>
 
               <Row justify="space-between" className="login-links">
-                <Text type="secondary" className="forgot-password">Lupa kata sandi?</Text>
+                {/* <Text type="secondary" className="forgot-password">Lupa kata sandi?</Text> */}
                 <Text type="secondary">
                   Belum memiliki akun? <Link to="/register" className="login-register-link">Daftar</Link>
                 </Text>
@@ -98,7 +98,7 @@ const LoginPage = () => {
                 </Button>
               </Form.Item>
             </Form>
-
+{/* 
             <div className="login-divider">
               <span>Or sign up with</span>
             </div>
@@ -107,7 +107,7 @@ const LoginPage = () => {
               <GoogleOutlined />
               <TwitterOutlined />
               <FacebookOutlined />
-            </div>
+            </div> */}
           </div>
         </Col>
       </Row>
